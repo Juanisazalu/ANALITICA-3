@@ -9,8 +9,12 @@ from sklearn.preprocessing import StandardScaler ## escalar variables
 
 ####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto
 
+def cat_summary(dataframe, col_name):
+    print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
+                        'Ratio': 100 * dataframe[col_name].value_counts() / len(dataframe)}))
+    print('##########################################')
+    
 ###########Esta función permite ejecutar un archivo  con extensión .sql que contenga varias consultas
-
 def ejecutar_sql (nombre_archivo, cur):
   sql_file=open(nombre_archivo)
   sql_as_string=sql_file.read()
