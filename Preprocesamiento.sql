@@ -41,3 +41,15 @@ ALTER TABLE tabla_completa DROP COLUMN 'index:3';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:1';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:2';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:3';
+
+ALTER TABLE tabla_completa ADD COLUMN v_objetivo INT;
+
+-- Actualizar los valores de la nueva columna basados en la condición
+UPDATE tabla_completa
+SET v_objetivo = CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END;
+
+--SELECT *,
+--CASE WHEN Attrition = "Yes" THEN 1 ELSE 0 END AS v_obtejivo
+--FROM tabla_completa;
+
+ALTER TABLE tabla_completa DROP COLUMN 'Attrition';
