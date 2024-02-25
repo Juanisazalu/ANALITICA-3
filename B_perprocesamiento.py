@@ -46,7 +46,8 @@ general_data.drop("Unnamed: 0", axis=1, inplace=True)
 encuesta_gerente.drop("Unnamed: 0", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0.1", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0", axis=1, inplace=True)
-general_data.drop(["EmployeeCount","Over18"],axis=1, inplace=True)
+general_data.drop(["EmployeeCount","Over18","StandardHours"],axis=1, inplace=True)
+info_retiros.drop("Attrition",axis=1, inplace=True)
 
 #Crear base de datos
 con=sql.connect("data\\db_basedatos")
@@ -61,11 +62,31 @@ cur.execute("Select name from sqlite_master where type='table'") ### consultar b
 cur.fetchall()
 
 #REALIZAR EXPLORACIONES INICIALES
-cat_cols=general_data.columns
-for col in cat_cols:
+for col in general_data.columns:
     funciones.cat_summary(general_data, col)
+    #jobrole tiene 7 categorias
 #Analizar que se puede categorizar
+for col in encuesta_empleado.columns:
+    funciones.cat_summary(encuesta_empleado, col)
+#jobsatisfactio ??? tiene niveles de 1,3, 
 
-pd.read_sql("""select DepID,count(*) 
-                            from employee 
-                            group by DepID""", conn)
+for col in encuesta_gerente.columns:
+    funciones.cat_summary(encuesta_gerente, col)
+
+for col in info_retiros.columns:
+    funciones.cat_summary(info_retiros, col)
+
+#Hacer consultas
+pd.read_sql("""select *  
+                            from info_retiros 
+                            WHERE strftime('%Y',retirementDate) = '2015' """, con)
+strftime('%Y',EffectiveDt) <= '2022'
+where EXTRACT(YEAR FROM retirementDate) = '2015'
+
+
+funciones.ejecutar_sql('Preprocesamiento.sql',cur)
+
+tabla=pd.read_sql("""select *  
+                     from tabla_completa """ , con)
+
+tabla.info()
