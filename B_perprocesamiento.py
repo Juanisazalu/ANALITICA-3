@@ -51,6 +51,7 @@ general_data.drop(["EmployeeCount","Over18","StandardHours"],axis=1, inplace=Tru
 #Crear base de datos
 con=sql.connect("data\\db_basedatos")
 cur=con.cursor()
+
 #Cargar bases
 encuesta_empleado.to_sql('encuesta_empleado', con, if_exists ="replace")
 general_data.to_sql('general_data', con, if_exists ="replace")
