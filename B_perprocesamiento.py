@@ -80,9 +80,6 @@ for col in info_retiros.columns:
 pd.read_sql("""select *  
                             from info_retiros 
                             WHERE strftime('%Y',retirementDate) = '2015' """, con)
-strftime('%Y',EffectiveDt) <= '2022'
-where EXTRACT(YEAR FROM retirementDate) = '2015'
-
 
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 

@@ -29,3 +29,15 @@ LEFT JOIN encuesta_empleado2 as ee ON gd.EmployeeID = ee.EmployeeID
 LEFT JOIN encuesta_gerente2 as eg ON eg.EmployeeID = gd.EmployeeID
 LEFT JOIN info_retiros2 AS ir ON ir.EmployeeID = eg.EmployeeID
 ;
+
+--eliminar variables-
+--volver el nombre de las columnas minusculas
+--rellenar nulos--
+
+ALTER TABLE tabla_completa DROP COLUMN 'index';
+ALTER TABLE tabla_completa DROP COLUMN 'index:1';
+ALTER TABLE tabla_completa DROP COLUMN 'index:2';
+ALTER TABLE tabla_completa DROP COLUMN 'index:3';
+ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:1';
+ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:2';
+ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:3';
