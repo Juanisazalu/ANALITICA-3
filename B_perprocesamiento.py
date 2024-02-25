@@ -47,7 +47,6 @@ encuesta_gerente.drop("Unnamed: 0", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0.1", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0", axis=1, inplace=True)
 general_data.drop(["EmployeeCount","Over18","StandardHours"],axis=1, inplace=True)
-info_retiros.drop("Attrition",axis=1, inplace=True)
 
 #Crear base de datos
 con=sql.connect("data\\db_basedatos")
@@ -80,6 +79,7 @@ for col in info_retiros.columns:
 pd.read_sql("""select *  
                             from info_retiros 
                             WHERE strftime('%Y',retirementDate) = '2015' """, con)
+
 
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 
