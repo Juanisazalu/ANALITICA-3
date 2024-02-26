@@ -41,10 +41,13 @@ ALTER TABLE tabla_completa DROP COLUMN 'index:2';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:1';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:2';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:3';
-ALTER TABLE tabla_completa DROP COLUMN 'infodate';
-ALTER TABLE tabla_completa DROP COLUMN 'datesurvey';
-ALTER TABLE tabla_completa DROP COLUMN 'surveydate';
-ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID';
+DROP TABLE IF EXISTS tabla_completa;
+CREATE TABLE  tabla_completa AS
+SELECT * FROM general_data2 AS gd
+LEFT JOIN encuesta_empleado2 as ee ON gd.EmployeeID = ee.EmployeeID
+LEFT JOIN encuesta_gerente2 as eg ON eg.EmployeeID = gd.EmployeeID
+LEFT JOIN info_retiros2 AS ir ON ir.EmployeeID = eg.EmployeeID
+;
 
 ALTER TABLE tabla_completa ADD COLUMN v_objetivo INT;
 
