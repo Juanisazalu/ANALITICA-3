@@ -19,7 +19,7 @@ WHERE strftime('%Y',SurveyDate) = '2015'
 DROP TABLE IF EXISTS info_retiros2 ;
 CREATE TABLE info_retiros2 AS
 SELECT EmployeeID, Attrition FROM info_retiros
-WHERE strftime('%Y',retirementDate) = '2015'
+WHERE strftime('%Y',retirementDate) = '2016' AND retirementType = "Resignation" 
 ;
 
 DROP TABLE IF EXISTS tabla_completa;

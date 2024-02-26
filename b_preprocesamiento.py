@@ -145,4 +145,9 @@ for tupla in resultados_filtrados:
 #Genero
 tabla.drop("gender", axis=1, inplace=True)
 tabla.to_csv('tabla_exploración1.csv', index=False)
-#Seleccion de modelos
+
+#Conteo de empleados que renunciaron
+len(tabla[tabla["v_objetivo"]==1])
+
+#Posibles modelos
+
