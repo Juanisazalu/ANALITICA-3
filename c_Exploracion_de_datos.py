@@ -22,7 +22,7 @@ tabla.columns
 
 cat= [x for x in tabla.columns if tabla[x].dtypes =="O"]
 continuas= tabla.select_dtypes(exclude='object')
-continuas.columns
+continuas=continuas.columns
 ### explorar variable respuesta ###
 # crear dataset
 fig=tabla.v_objetivo.hist(bins=20,ec='black') ## no hay atípicos
