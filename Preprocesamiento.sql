@@ -18,7 +18,7 @@ WHERE strftime('%Y',SurveyDate) = '2015'
 
 DROP TABLE IF EXISTS info_retiros2 ;
 CREATE TABLE info_retiros2 AS
-SELECT * FROM info_retiros
+SELECT EmployeeID, Attrition FROM info_retiros
 WHERE strftime('%Y',retirementDate) = '2015'
 ;
 
@@ -37,10 +37,14 @@ LEFT JOIN info_retiros2 AS ir ON ir.EmployeeID = eg.EmployeeID
 ALTER TABLE tabla_completa DROP COLUMN 'index';
 ALTER TABLE tabla_completa DROP COLUMN 'index:1';
 ALTER TABLE tabla_completa DROP COLUMN 'index:2';
-ALTER TABLE tabla_completa DROP COLUMN 'index:3';
+--ALTER TABLE tabla_completa DROP COLUMN 'index:3';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:1';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:2';
 ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:3';
+ALTER TABLE tabla_completa DROP COLUMN 'infodate';
+ALTER TABLE tabla_completa DROP COLUMN 'datesurvey';
+ALTER TABLE tabla_completa DROP COLUMN 'surveydate';
+ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID';
 
 ALTER TABLE tabla_completa ADD COLUMN v_objetivo INT;
 

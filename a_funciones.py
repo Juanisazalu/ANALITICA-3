@@ -22,7 +22,7 @@ def ejecutar_sql (nombre_archivo, cur):
   cur.executescript(sql_as_string)
   
   
-def imputar_f (df,list_cat):  
+def imputar_f(df,list_cat):  
         
     
     df_c=df[list_cat]
