@@ -34,20 +34,13 @@ LEFT JOIN info_retiros2 AS ir ON ir.EmployeeID = eg.EmployeeID
 --volver el nombre de las columnas minusculas
 --rellenar nulos--
 
-ALTER TABLE tabla_completa DROP COLUMN 'index';
-ALTER TABLE tabla_completa DROP COLUMN 'index:1';
-ALTER TABLE tabla_completa DROP COLUMN 'index:2';
+ALTER TABLE tabla_completa DROP COLUMN "index";
+ALTER TABLE tabla_completa DROP COLUMN "index:1";
+ALTER TABLE tabla_completa DROP COLUMN "index:2";
 --ALTER TABLE tabla_completa DROP COLUMN 'index:3';
-ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:1';
-ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:2';
-ALTER TABLE tabla_completa DROP COLUMN 'EmployeeID:3';
-DROP TABLE IF EXISTS tabla_completa;
-CREATE TABLE  tabla_completa AS
-SELECT * FROM general_data2 AS gd
-LEFT JOIN encuesta_empleado2 as ee ON gd.EmployeeID = ee.EmployeeID
-LEFT JOIN encuesta_gerente2 as eg ON eg.EmployeeID = gd.EmployeeID
-LEFT JOIN info_retiros2 AS ir ON ir.EmployeeID = eg.EmployeeID
-;
+ALTER TABLE tabla_completa DROP COLUMN "EmployeeID:1";
+ALTER TABLE tabla_completa DROP COLUMN "EmployeeID:2";
+ALTER TABLE tabla_completa DROP COLUMN "EmployeeID:3";
 
 ALTER TABLE tabla_completa ADD COLUMN v_objetivo INT;
 
@@ -60,3 +53,7 @@ SET v_objetivo = CASE WHEN Attrition = 'Yes' THEN 1 ELSE 0 END;
 --FROM tabla_completa;
 
 ALTER TABLE tabla_completa DROP COLUMN 'Attrition';
+ALTER TABLE tabla_completa DROP COLUMN 'infodate';
+ALTER TABLE tabla_completa DROP COLUMN 'datesurvey';
+ALTER TABLE tabla_completa DROP COLUMN 'surveydate';
+

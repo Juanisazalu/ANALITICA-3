@@ -7,7 +7,6 @@ import numpy as np
 from matplotlib.pyplot import figure
 import seaborn as sns
 from itertools import product
-
 #Ruta 
 sys.path
 #sys.path.append('c:\\cod\\LEA3_HR\\data') ## este comanda agrega una ruta
@@ -43,18 +42,11 @@ encuesta_gerente["SurveyDate"]=pd.to_datetime(encuesta_gerente["SurveyDate"])
 info_retiros["retirementDate"]
 info_retiros["retirementDate"]=pd.to_datetime(info_retiros["retirementDate"])
 
-#Valores unicos para las variables exploración inicial
-for col in general_data.columns:
-    funciones.cat_summary(general_data, col)
- 
-for col in encuesta_empleado.columns:
-    funciones.cat_summary(encuesta_empleado, col)
-
-for col in encuesta_gerente.columns:
-    funciones.cat_summary(encuesta_gerente, col)
-
-for col in info_retiros.columns:
-    funciones.cat_summary(info_retiros, col)
+#Valores unicos para las variables exploración inicial 
+for tabla in [general_data,encuesta_empleado,encuesta_gerente,info_retiros]:
+    print("------------------------------------") #cambio de tabla
+    for col in tabla.columns:
+        funciones.cat_summary(tabla, col) 
 #La exploración anterior arroja que las variables  EmployeeCount, Over18, StandardHours
 #son constantes y por lo tanto no aportaran nada al modelo, ademas algunas otras variables
 #que no tienen un sentido claro.
@@ -66,6 +58,7 @@ encuesta_gerente.drop("Unnamed: 0", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0.1", axis=1, inplace=True)
 info_retiros.drop("Unnamed: 0", axis=1, inplace=True)
 general_data.drop(["EmployeeCount","Over18","StandardHours"],axis=1, inplace=True)
+
 
 #Crear base de datos
 con=sql.connect("data\\db_basedatos")
@@ -85,7 +78,7 @@ cur.fetchall()
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 tabla=pd.read_sql("""select *  from tabla_completa """ , con)
 
-tabla.info()
+tabla.columns
 
 #Relleno de nulos
 tabla.isnull().sum()
@@ -121,33 +114,16 @@ figure(figsize=(20,6))
 sns.heatmap(tabla.corr(),cmap = sns.cubehelix_palette(as_cmap=True), annot = True, fmt = ".2f")
 
 #Analisis relacion entre variables categoricas
-tabla_cat = tabla.select_dtypes(include=['object']).copy()
-print(tabla.select_dtypes(include=['object']).columns)
-
-cat_var1 = ('businesstravel', 'department', 'educationfield', 'gender', 'jobrole','maritalstatus')
-cat_var2 = ('businesstravel', 'department', 'educationfield', 'gender', 'jobrole','maritalstatus')
-
-cat_var_prod = list(product(cat_var1,cat_var2, repeat = 1))
-
-import scipy.stats as ss
-result = []
-for i in cat_var_prod:
-  if i[0] != i[1]:
-      result.append((i[0],i[1],list(ss.chi2_contingency(pd.crosstab(
-                            tabla_cat[i[0]], tabla_cat[i[1]])))[1]))
-resultados_filtrados = [tupla for tupla in result if tupla[2] > 0.05]
-
-# Imprimir los resultados filtrados
-for tupla in resultados_filtrados:
-    print(tupla)
-    
+funciones.prueba_chicuadrado(tabla)
 #Se elimina 
 #Genero
 tabla.drop("gender", axis=1, inplace=True)
-tabla.to_csv('tabla_exploración1.csv', index=False)
 
 #Conteo de empleados que renunciaron
 len(tabla[tabla["v_objetivo"]==1])
 
+tabla.drop("employeeid", axis=1, inplace=True)
+tabla.to_csv('tabla_exploración.csv', index=False)
 #Posibles modelos
+tabla.columns
 

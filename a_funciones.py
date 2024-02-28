@@ -6,8 +6,21 @@ from sklearn.feature_selection import SelectFromModel
 from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate
 import joblib
 from sklearn.preprocessing import StandardScaler ## escalar variables 
-
+from itertools import product
+import scipy.stats as ss
 ####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto
+def prueba_chicuadrado(tabla):
+    tabla_cat = tabla.select_dtypes(include=['object']).copy()
+    cat_var1=tuple(tabla.select_dtypes(include=["object"]))
+    cat_var2=tuple(tabla.select_dtypes(include=["object"]))
+    cat_var_prod = list(product(cat_var1, cat_var2, repeat=1))
+    result=[]
+    for i in cat_var_prod:
+        result.append((i[0],i[1],list(ss.chi2_contingency(pd.crosstab(
+                            tabla_cat[i[0]], tabla_cat[i[1]])))[1]))
+    resultado=[x for x in result if x[2]>0.05]
+    return resultado
+    
 
 def cat_summary(dataframe, col_name):
     print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),

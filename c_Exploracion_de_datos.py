@@ -42,10 +42,8 @@ plt.show()"""
 
 ### Dimensiones del dataset
 tabla.shape
-
 # Número de datos ausentes por variable
 tabla.isna().sum().sort_values()
-
 
 tabla.describe()
 
@@ -55,12 +53,11 @@ tabla.info()
 fig=tabla[continuas].hist(bins=50, figsize=(40,30),grid=False,ec='black')
 plt.show() 
 
-scatter_matrix(tabla[continuas], figsize=(12, 8))
+scatter_matrix(tabla[continuas], figsize=(100, 100))
 plt.show()
 
 cont=tabla[continuas]
 corr_matrix = cont.corr()
-
 
 ### Gráfico de distribución de las variables númericas
 fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(9, 5))
@@ -91,6 +88,7 @@ fig.suptitle('Distribución variables numéricas', fontsize = 10, fontweight = "
 
 ##### Variable categóricas ####
 
+
 plt.figure(figsize=(25, 10))
 plt.subplot(2,3,1)
 tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
@@ -103,11 +101,63 @@ tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
 plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
+sns.pairplot(tabla, hue='v_objetivo', size=2.5)
+
 ### relación con variable objetivo
+
+
+tabla[continuas].columns
+
+fig, ax=plt.subplots(figsize=(10,10),nrows=4, ncols=4)
+
+plt.figure(figsize=(15, 8))  # Ajusta el tamaño de la figura según sea necesario
+
+for variable in continuas:
+    sns.boxplot(x='v_objetivo', y=variable, data=tabla, width=0.5, notch=True)
+
+# Añade etiquetas y título
+
+len(continuas)
+for i in range(len(continuas)):
+ plt.subplot(2, 3, i)
+ sns.catplot(data=tabla, x="v_objetivo", y=tabla[i], kind="box")
+ #plt.text(0.5, 0.5, str((2, 3, i)),
+ #fontsize=18, ha='center')
+
+sns.catplot(data=tabla, x="v_objetivo", y="age", kind="box")
 
 tabla.boxplot("v_objetivo","jobrole",figsize=(5,5),grid=False)
 tabla.barplot("v_objetivo","businesstravel",figsize=(5,5),grid=False)
 
 sns.barplot(x = "v_objetivo", y = "businesstravel", data = tabla)
 
+fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(15, 10), sharey=True)
 
+# Aplanar la matriz de subgráficos para facilitar el acceso
+axes = axes.flatten()
+
+# Iterar sobre las variables continuas y crear un boxplot en cada subgráfico
+for i, variable in enumerate(continuas):
+    sns.boxplot(x='v_objetivo', y=variable, data=tabla, ax=axes[i], width=0.5, notch=True)
+    axes[i].set_title(variable)
+
+
+fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(15, 10), sharey=True)
+
+# Aplanar la matriz de subgráficos para facilitar el acceso
+axes = axes.flatten()
+
+# Iterar sobre las variables continuas y crear un boxplot en cada subgráfico
+for i, variable in enumerate(continuas):
+    sns.boxplot(x='v_objetivo', y=variable, data=tabla, ax=axes[i], width=0.5, notch=True)
+    axes[i].set_title(variable)
+    
+    # Ajustar los límites del eje y para evitar que la caja esté pegada a la parte inferior
+    ylim = axes[i].get_ylim()
+    axes[i].set_ylim(ylim[0] - 0.1 * (ylim[1] - ylim[0]), ylim[1])
+
+# Ajustar el diseño de los subgráficos
+plt.tight_layout()
+
+# Muestra el gráfico
+plt.show()
