@@ -102,62 +102,47 @@ plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
 sns.pairplot(tabla, hue='v_objetivo', size=2.5)
+sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction")
 
-### relación con variable objetivo
-
-
+### relación de variables continuas con variable objetivo
 tabla[continuas].columns
-
-fig, ax=plt.subplots(figsize=(10,10),nrows=4, ncols=4)
-
-plt.figure(figsize=(15, 8))  # Ajusta el tamaño de la figura según sea necesario
-
-for variable in continuas:
-    sns.boxplot(x='v_objetivo', y=variable, data=tabla, width=0.5, notch=True)
-
 # Añade etiquetas y título
+fig, ax = plt.subplots(3, 5, sharex='col', sharey='row', figsize=(12, 10))
+sns.boxplot(data=tabla, x="v_objetivo", y="age", ax=ax[0, 0])
+sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome", ax=ax[0, 1])
+sns.boxplot(data=tabla, x="v_objetivo", y="education", ax=ax[0, 2])
+sns.boxplot(data=tabla, x="v_objetivo", y="joblevel", ax=ax[0, 3])
+sns.boxplot(data=tabla, x="v_objetivo", y="monthlyincome", ax=ax[0, 4])
+sns.boxplot(data=tabla, x="v_objetivo", y="numcompaniesworked", ax=ax[1, 0])
+sns.boxplot(data=tabla, x="v_objetivo", y="percentsalaryhike", ax=ax[1, 1])
+sns.boxplot(data=tabla, x="v_objetivo", y="stockoptionlevel", ax=ax[1, 2])
+sns.boxplot(data=tabla, x="v_objetivo", y="trainingtimeslastyear", ax=ax[1, 3])
+sns.boxplot(data=tabla, x="v_objetivo", y="yearssincelastpromotion", ax=ax[1, 4])
+sns.boxplot(data=tabla, x="v_objetivo", y="yearswithcurrmanager", ax=ax[2, 0])
+sns.boxplot(data=tabla, x="v_objetivo", y="environmentsatisfaction", ax=ax[2, 1])
+sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction", ax=ax[2, 2])
+sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance", ax=ax[2, 3])
+sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement", ax=ax[2, 4])
+# Añade títulos y etiquetas si es necesario
+plt.suptitle("Análisis de variables continuas con la variable objetivo", y=1.02)
+ax[0, 0].set_title("Edad")
+ax[0, 1].set_title("Distancia desde casa")
+ax[1, 0].set_title("Nivel de educación")
+ax[1, 1].set_title("Nivel de trabajo")
 
-len(continuas)
-for i in range(len(continuas)):
- plt.subplot(2, 3, i)
- sns.catplot(data=tabla, x="v_objetivo", y=tabla[i], kind="box")
- #plt.text(0.5, 0.5, str((2, 3, i)),
- #fontsize=18, ha='center')
-
-sns.catplot(data=tabla, x="v_objetivo", y="age", kind="box")
-
-tabla.boxplot("v_objetivo","jobrole",figsize=(5,5),grid=False)
-tabla.barplot("v_objetivo","businesstravel",figsize=(5,5),grid=False)
-
-sns.barplot(x = "v_objetivo", y = "businesstravel", data = tabla)
-
-fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(15, 10), sharey=True)
-
-# Aplanar la matriz de subgráficos para facilitar el acceso
-axes = axes.flatten()
-
-# Iterar sobre las variables continuas y crear un boxplot en cada subgráfico
-for i, variable in enumerate(continuas):
-    sns.boxplot(x='v_objetivo', y=variable, data=tabla, ax=axes[i], width=0.5, notch=True)
-    axes[i].set_title(variable)
-
-
-fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(15, 10), sharey=True)
-
-# Aplanar la matriz de subgráficos para facilitar el acceso
-axes = axes.flatten()
-
-# Iterar sobre las variables continuas y crear un boxplot en cada subgráfico
-for i, variable in enumerate(continuas):
-    sns.boxplot(x='v_objetivo', y=variable, data=tabla, ax=axes[i], width=0.5, notch=True)
-    axes[i].set_title(variable)
-    
-    # Ajustar los límites del eje y para evitar que la caja esté pegada a la parte inferior
-    ylim = axes[i].get_ylim()
-    axes[i].set_ylim(ylim[0] - 0.1 * (ylim[1] - ylim[0]), ylim[1])
-
-# Ajustar el diseño de los subgráficos
 plt.tight_layout()
+plt.show()
 
-# Muestra el gráfico
+###Relacion de variables categorica con variable respuesta
+tabla[cat].columns
+
+cross_tab = pd.crosstab(tabla['businesstravel'], tabla['v_objetivo'])
+
+# Crear el gráfico de barras apiladas
+plt.figure(figsize=(8, 6))
+cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
+plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
+plt.xlabel('Estado civil')
+plt.ylabel('Número de Personas')
+plt.legend(title='Deserción')
 plt.show()
