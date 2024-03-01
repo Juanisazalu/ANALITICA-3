@@ -18,7 +18,7 @@ import plotly.graph_objects as go
 import plotly.figure_factory as ff
 
 
-tabla=pd.read_csv("tabla_exploración1.csv")
+tabla=pd.read_csv("tabla_exploración.csv")
 tabla.columns
 
 cat= [x for x in tabla.columns if tabla[x].dtypes =="O"]

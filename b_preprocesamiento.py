@@ -41,7 +41,8 @@ encuesta_gerente["SurveyDate"]=pd.to_datetime(encuesta_gerente["SurveyDate"])
 
 info_retiros["retirementDate"]
 info_retiros["retirementDate"]=pd.to_datetime(info_retiros["retirementDate"])
-
+len(info_retiros["EmployeeID"].value_counts())
+len(general_data["EmployeeID"].value_counts())
 #Valores unicos para las variables exploración inicial 
 for tabla in [general_data,encuesta_empleado,encuesta_gerente,info_retiros]:
     print("------------------------------------") #cambio de tabla
@@ -125,5 +126,21 @@ len(tabla[tabla["v_objetivo"]==1])
 tabla.drop("employeeid", axis=1, inplace=True)
 tabla.to_csv('tabla_exploración.csv', index=False)
 #Posibles modelos
-tabla.columns
+
+tabla.info()
+len(tabla.columns)
+#Tabla para test
+funciones.ejecutar_sql('Preprocesamiento.sql',cur)
+tabla2=pd.read_sql("""select *  from tabla_completa2 """ , con)
+
+len(tabla2.columns)
+tabla2.isnull().sum()
+tabla2["NumCompaniesWorked"]=tabla2["NumCompaniesWorked"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["NumCompaniesWorked"].median()))
+tabla2["EnvironmentSatisfaction"]=tabla2["EnvironmentSatisfaction"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["EnvironmentSatisfaction"].median()))
+tabla2["JobSatisfaction"]=tabla2["JobSatisfaction"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["JobSatisfaction"].median()))
+tabla2["WorkLifeBalance"]=tabla2["WorkLifeBalance"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["WorkLifeBalance"].median()))
+tabla2.isnull().sum()
+tabla2.columns=tabla2.columns.str.lower()
+
+tabla2.to_csv('tabla2.csv', index=False)
 
