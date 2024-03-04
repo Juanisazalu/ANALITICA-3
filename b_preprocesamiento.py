@@ -79,8 +79,6 @@ cur.fetchall()
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 tabla=pd.read_sql("""select *  from tabla_completa """ , con)
 
-tabla.columns
-
 #Relleno de nulos
 tabla.isnull().sum()
 #Con la funcion no da
@@ -129,6 +127,7 @@ tabla.to_csv('tabla_exploración.csv', index=False)
 
 tabla.info()
 len(tabla.columns)
+
 #Tabla para test
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 tabla2=pd.read_sql("""select *  from tabla_completa2 """ , con)

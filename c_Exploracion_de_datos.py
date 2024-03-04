@@ -86,9 +86,26 @@ plt.subplots_adjust(top = 0.9)
 fig.suptitle('Distribución variables numéricas', fontsize = 10, fontweight = "bold")
 
 
+
+### relación de variables continuas con variable objetivo
+# Añadir etiquetas y título
+sns.boxplot(data=tabla, x="v_objetivo", y="age")
+sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome")
+sns.boxplot(data=tabla, x="v_objetivo", y="education")
+sns.boxplot(data=tabla, x="v_objetivo", y="joblevel")
+sns.boxplot(data=tabla, x="v_objetivo", y="monthlyincome")
+sns.boxplot(data=tabla, x="v_objetivo", y="numcompaniesworked")
+sns.boxplot(data=tabla, x="v_objetivo", y="percentsalaryhike")
+sns.boxplot(data=tabla, x="v_objetivo", y="stockoptionlevel")
+sns.boxplot(data=tabla, x="v_objetivo", y="trainingtimeslastyear")
+sns.boxplot(data=tabla, x="v_objetivo", y="yearssincelastpromotion")
+sns.boxplot(data=tabla, x="v_objetivo", y="yearswithcurrmanager")
+sns.boxplot(data=tabla, x="v_objetivo", y="environmentsatisfaction")
+sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction")
+sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance")
+sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")
+
 ##### Variable categóricas ####
-
-
 plt.figure(figsize=(25, 10))
 plt.subplot(2,3,1)
 tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
@@ -100,38 +117,6 @@ plt.subplot(2,3,4)
 tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
 plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
-
-sns.pairplot(tabla, hue='v_objetivo', size=2.5)
-sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction")
-
-### relación de variables continuas con variable objetivo
-tabla[continuas].columns
-# Añade etiquetas y título
-fig, ax = plt.subplots(3, 5, sharex='col', sharey='row', figsize=(12, 10))
-sns.boxplot(data=tabla, x="v_objetivo", y="age", ax=ax[0, 0])
-sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome", ax=ax[0, 1])
-sns.boxplot(data=tabla, x="v_objetivo", y="education", ax=ax[0, 2])
-sns.boxplot(data=tabla, x="v_objetivo", y="joblevel", ax=ax[0, 3])
-sns.boxplot(data=tabla, x="v_objetivo", y="monthlyincome", ax=ax[0, 4])
-sns.boxplot(data=tabla, x="v_objetivo", y="numcompaniesworked", ax=ax[1, 0])
-sns.boxplot(data=tabla, x="v_objetivo", y="percentsalaryhike", ax=ax[1, 1])
-sns.boxplot(data=tabla, x="v_objetivo", y="stockoptionlevel", ax=ax[1, 2])
-sns.boxplot(data=tabla, x="v_objetivo", y="trainingtimeslastyear", ax=ax[1, 3])
-sns.boxplot(data=tabla, x="v_objetivo", y="yearssincelastpromotion", ax=ax[1, 4])
-sns.boxplot(data=tabla, x="v_objetivo", y="yearswithcurrmanager", ax=ax[2, 0])
-sns.boxplot(data=tabla, x="v_objetivo", y="environmentsatisfaction", ax=ax[2, 1])
-sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction", ax=ax[2, 2])
-sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance", ax=ax[2, 3])
-sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement", ax=ax[2, 4])
-# Añade títulos y etiquetas si es necesario
-plt.suptitle("Análisis de variables continuas con la variable objetivo", y=1.02)
-ax[0, 0].set_title("Edad")
-ax[0, 1].set_title("Distancia desde casa")
-ax[1, 0].set_title("Nivel de educación")
-ax[1, 1].set_title("Nivel de trabajo")
-
-plt.tight_layout()
-plt.show()
 
 ###Relacion de variables categorica con variable respuesta
 tabla[cat].columns

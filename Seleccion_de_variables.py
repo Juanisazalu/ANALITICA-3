@@ -4,6 +4,13 @@ from sklearn.compose import ColumnTransformer
 from sklearn.preprocessing import StandardScaler, OneHotEncoder
 from sklearn.pipeline import Pipeline
 import pandas as pd
+import a_funciones as funciones
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.linear_model import LogisticRegression
+from sklearn.svm import SVC
+
 #Carga de taablas
 tabla=pd.read_csv("tabla_exploración.csv")
 tabla2=pd.read_csv("tabla2.csv")
@@ -30,6 +37,19 @@ xtrain=dfxx[:,xnew]
 dftestx=pipeline.transform(tabla2)
 xtest=dftestx[:,xnew]
 
+#Como se puede ver que variables eligio el modelo ??
+funciones.sel_variables()
+
+
+#Selección de variables 
+mcla = LogisticRegression()
+mdtc= DecisionTreeClassifier()
+mrfc= RandomForestClassifier()
+mgbc=GradientBoostingClassifier()
+modelos= [ mdtc, mrfc, mgbc]
+
+var_names=funciones.sel_variables1(modelos,dfxx,dfy,threshold="2*mean")
+var_names.shape
 
 
 

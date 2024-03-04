@@ -70,6 +70,16 @@ def sel_variables(modelos,X,y,threshold):
     
     return var_names_ac
 
+def sel_variables1(modelos, X, y, threshold):
+    var_names_ac = np.array([])
+
+    for modelo in modelos:
+        modelo.fit(X, y)
+        sel = SelectFromModel(modelo, threshold=threshold)
+        var_names = X.columns[sel.get_support()]
+        var_names_ac = np.append(var_names_ac, var_names)
+
+    var_names_ac = np.unique(var_names_ac)
 
 def medir_modelos(modelos,scoring,X,y,cv):
 
