@@ -11,6 +11,7 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 
+
 #Carga de taablas
 tabla=pd.read_csv("tabla_exploración.csv")
 tabla2=pd.read_csv("tabla2.csv")
@@ -26,16 +27,27 @@ preprocesador=ColumnTransformer(transformers=[("num",numerical_transformer, vari
 pipeline=Pipeline(steps=[("transformacion",preprocesador)])
 dfxx=pipeline.fit_transform(dfx)
 
-# Convierte el array de NumPy a un DataFrame de pandas
+
+#Metodo integrado
+select=SelectFromModel(Lasso(alpha = 0.001, max_iter=10000),max_features=30)
+select.fit(dfxx,dfy)
+#Coeficientes del estimador, los mas cercanos a cero son eliminados
+select.estimator_.coef_
+
+xnew=select.get_support()
+xtrain=dfxx[:,xnew]
+#falta para el xtest
+dftestx=pipeline.transform(tabla2)
+xtest=dftestx[:,xnew]
+
+
+# Pasar el array a DataFrame
 columnas_numericas = variables_continuas
 categorical_transformer = preprocesador.named_transformers_['cat']
 categorias = categorical_transformer.named_steps['onehot'].get_feature_names_out(variables_categorias)
-
 nuevas_columnas = columnas_numericas + list(categorias)
 
 X_df = pd.DataFrame(dfxx, columns=nuevas_columnas)
-
-X_df.shape
 
 #Selección de variables 
 mcla = LogisticRegression()
@@ -50,6 +62,5 @@ var_names.shape
 dfx2=X_df[var_names] ### matriz con variables seleccionadas
 X_df.info()
 dfx2.info()
-
 
 
