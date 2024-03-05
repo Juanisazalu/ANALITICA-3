@@ -78,8 +78,10 @@ def sel_variables1(modelos, X, y, threshold):
         sel = SelectFromModel(modelo, threshold=threshold)
         var_names = X.columns[sel.get_support()]
         var_names_ac = np.append(var_names_ac, var_names)
+        var_names_ac = np.unique(var_names_ac)
+        
+    return var_names_ac
 
-    var_names_ac = np.unique(var_names_ac)
 
 def medir_modelos(modelos,scoring,X,y,cv):
 

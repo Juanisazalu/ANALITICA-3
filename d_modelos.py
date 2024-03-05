@@ -25,31 +25,31 @@ preprocesador=ColumnTransformer(transformers=[("num",numerical_transformer, vari
                                 ("cat",categorical_transformer,variables_categorias)])
 pipeline=Pipeline(steps=[("transformacion",preprocesador)])
 dfxx=pipeline.fit_transform(dfx)
-#Metodo integrado
-select=SelectFromModel(Lasso(alpha = 0.001, max_iter=10000),max_features=30)
-select.fit(dfxx,dfy)
-#Coeficientes del estimador, los mas cercanos a cero son eliminados
-select.estimator_.coef_
 
-xnew=select.get_support()
-xtrain=dfxx[:,xnew]
-#falta para el xtest
-dftestx=pipeline.transform(tabla2)
-xtest=dftestx[:,xnew]
+# Convierte el array de NumPy a un DataFrame de pandas
+columnas_numericas = variables_continuas
+categorical_transformer = preprocesador.named_transformers_['cat']
+categorias = categorical_transformer.named_steps['onehot'].get_feature_names_out(variables_categorias)
 
-#Como se puede ver que variables eligio el modelo ??
-funciones.sel_variables()
+nuevas_columnas = columnas_numericas + list(categorias)
 
+X_df = pd.DataFrame(dfxx, columns=nuevas_columnas)
+
+X_df.shape
 
 #Selección de variables 
 mcla = LogisticRegression()
 mdtc= DecisionTreeClassifier()
 mrfc= RandomForestClassifier()
 mgbc=GradientBoostingClassifier()
-modelos= [ mdtc, mrfc, mgbc]
+modelos= [ mcla, mdtc, mrfc, mgbc]
 
-var_names=funciones.sel_variables1(modelos,dfxx,dfy,threshold="2*mean")
+var_names=funciones.sel_variables1(modelos,X_df,dfy,threshold=0.25)
 var_names.shape
+
+dfx2=X_df[var_names] ### matriz con variables seleccionadas
+X_df.info()
+dfx2.info()
 
 
 
