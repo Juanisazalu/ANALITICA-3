@@ -125,4 +125,45 @@ def preparar_datos (df):
     
     return X
 
+####### funcion para variar el treshold y sacar el mejor desempeño#####
+def numero_variables(modelos,X,y,scoring,finish):
+    threshold=0
+    resultado_final=pd.DataFrame()
+    for i in range(int(finish)):
+        
+        def sel_variables(modelos,X,y,threshold):
+            var_names_ac=np.array([])
+            for modelo in modelos:
+                #modelo=modelos[i]
+                modelo.fit(X,y)
+                sel = SelectFromModel(modelo, prefit=True,threshold=threshold)
+                var_names= modelo.feature_names_in_[sel.get_support()]
+                var_names_ac=np.append(var_names_ac, var_names)
+                var_names_ac=np.unique(var_names_ac)
+            return var_names_ac
+        
+        var_names=sel_variables(modelos,X,y,threshold)
+        xtrain=X[var_names]
+        
+        
+        def medir_modelos(modelos,scoring,X,y,cv):
+            metric_modelos=pd.DataFrame()
+            for modelo in modelos:
+                scores=cross_val_score(modelo,X,y, scoring=scoring, cv=cv )
+                pdscores=pd.DataFrame(scores)
+                metric_modelos=pd.concat([metric_modelos,pdscores],axis=1)
+            
+            metric_modelos.columns=["reg_lineal","decision_tree","random_forest","gradient_boosting"]
+            return metric_modelos
+        
+        cv=20
+        dfresultados=medir_modelos(modelos,scoring,xtrain,y,cv)
+        tabla=dfresultados.mean(axis=0)
+        tabla = pd.DataFrame(tabla, columns=["threshold {}".format(i)])
+        resultado_final=pd.concat([resultado_final, tabla], axis=1)
+        
+        threshold+=0.1
+        
+    return resultado_final
+
 
