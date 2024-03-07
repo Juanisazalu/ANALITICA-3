@@ -11,6 +11,8 @@ from sklearn.tree import DecisionTreeClassifier
 from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 import seaborn as sns
+import matplotlib.pyplot as plt
+
 
 import numpy as np
 from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate
@@ -106,86 +108,25 @@ sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrain, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
 
+df_resultado = pd.DataFrame()
+thres=0.5
+for i in range(30):
+    df_actual=0
+    var_names=funciones.sel_variables(modelos, x, dfy, threshold="{}*mean".format(thres))
+    xtrain=x[var_names]
+    accu_xtrain=funciones.medir_modelos(modelos,"accuracy",xtrain,dfy,5)
+    df=accu_xtrain.mean(axis=0)
+    df_actual = pd.DataFrame(df, columns=['threshold {}'.format(thres)])
+    df_resultado = pd.concat([df_resultado, df_actual], axis=1)
+    thres+=0.15
+    thres=round(thres,2)
 
 
-#ignorar
-def medir_modelos(modelos,scoring,X,y,cv):
+df=df_resultado.T
+plt.figure(figsize=(10,10))
+sns.lineplot(data=df)
+plt.xticks(rotation=45, ha="right")
+plt.tight_layout()
 
-    metric_modelos=pd.DataFrame()
-    for modelo in modelos:
-        scores=cross_val_score(modelo,X,y, scoring=scoring, cv=cv )
-        pdscores=pd.DataFrame(scores)
-        metric_modelos=pd.concat([metric_modelos,pdscores],axis=1)
-    
-    metric_modelos.columns=["reg_lineal","decision_tree","random_forest","gradient_boosting"]
-    return metric_modelos
-
-
-metric_modelos=pd.DataFrame()
-scores=cross_val_score(mcla,xtrain,dfy, scoring="accuracy", cv=20 )
-dfscores=pd.DataFrame(scores)
-metric_modelos=pd.concat([metric_modelos,dfscores],axis=1)
-
-scores=cross_val_score(mdtc,xtrain,dfy, scoring="accuracy", cv=20 )
-dfscores=pd.DataFrame(scores)
-metric_modelos=pd.concat([metric_modelos, dfscores],axis=1)
-
-
-
-def numero_variables(modelos,X,y,scoring,finish):
-    threshold=0
-    resultado_final=pd.DataFrame()
-    for i in range(int(finish)):
-        var_names=funciones.sel_variables(modelos,X,y,threshold)
-        xtrain=X[var_names]
-    
-        cv=2
-        dfresultados=funciones.medir_modelos(modelos,str(scoring),xtrain,y,cv)
-        tabla=dfresultados.mean(axis=0)
-        tabla = pd.DataFrame(tabla, columns=["threshold {}".format(i)])
-        resultado_final=pd.concat([resultado_final, tabla], axis=1)
-        
-        threshold+=0.1
-        
-    return resultado_final
-
-numero_variables(modelos,xtrain,dfy,"accuracy",50)
-
-
-def sel_variables(modelo_actual, X, y, threshold):
-    var_names_ac = np.array([])
-    for modelo in modelo_actual:
-        modelo.fit(X, y)
-        sel = SelectFromModel(modelo, prefit=True, threshold=threshold)
-        var_names = X.columns[sel.get_support()]
-        var_names_ac = np.append(var_names_ac, var_names)
-        var_names_ac = np.unique(var_names_ac)
-    return var_names_ac
-
-def medir_modelos(modelo_actual, scoring, X, y, cv):
-    metric_modelos = pd.DataFrame()
-    for modelo in modelo_actual:
-        scores = cross_val_score(modelo, X, y, scoring=scoring, cv=cv)
-        pdscores = pd.DataFrame(scores)
-        metric_modelos = pd.concat([metric_modelos, pdscores], axis=1)
-
-    metric_modelos.columns = ["reg_lineal", "decision_tree", "random_forest", "gradient_boosting"]
-    return metric_modelos
-
-def numero_variables(modelos, X, y, scoring, finish):
-    threshold = 0
-    resultado_final = pd.DataFrame()
-
-    for i in range(int(finish)):
-        var_names = sel_variables(modelos, X, y, threshold)
-        xtrain = X[var_names]
-
-        cv = 2
-        dfresultados = medir_modelos(modelos, str(scoring), xtrain, y, cv)
-        tabla = dfresultados.mean(axis=0)
-        tabla = pd.DataFrame(tabla, columns=["threshold {}".format(i)])
-        resultado_final = pd.concat([resultado_final, tabla], axis=1)
-
-        threshold += 0.1
-
-    return resultado_final
+df.idxmax(axis=0)
+#Los dos modelos a tunear son random_forest y decision_tree
