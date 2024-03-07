@@ -69,11 +69,10 @@ var_names.shape
 dfx2=X_df[var_names] ### matriz con variables seleccionadas
 X_df.info()
 dfx2.info()"""
-tabla.iloc[:,9:-1]
 #Como el profesor
-cat=tabla.select_dtypes(include="object").columns
+cat=dfx.select_dtypes(include="object").columns
 tabla[cat]
-num=tabla.select_dtypes(exclude="object").columns
+num=dfx.select_dtypes(exclude="object").columns
 tabla[num]
 
 df_dum=pd.get_dummies(dfx,columns=cat)
@@ -83,6 +82,7 @@ scaler=StandardScaler()
 scaler.fit(df_dum)
 xnor=scaler.transform(df_dum)
 x=pd.DataFrame(xnor,columns=df_dum.columns)
+x.columns
 #Selección de variables 
 mcla = LogisticRegression()
 mdtc= DecisionTreeClassifier()
