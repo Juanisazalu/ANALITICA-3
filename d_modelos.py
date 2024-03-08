@@ -12,7 +12,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.svm import SVC
 import seaborn as sns
 import matplotlib.pyplot as plt
-
+from sklearn.model_selection import GridSearchCV
 
 import numpy as np
 from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate
@@ -24,51 +24,7 @@ tabla2=pd.read_csv("tabla2.csv")
 
 dfx=tabla.iloc[:,:-1]
 dfy=tabla.iloc[:,-1]
-"""
-variables_categorias = list(dfx.select_dtypes(include="object"))
-variables_continuas = list(dfx.select_dtypes(exclude="object"))
-categorical_transformer=Pipeline(steps=[("onehot", OneHotEncoder(handle_unknown='ignore'))])
-numerical_transformer=Pipeline(steps=[("standarscaler", StandardScaler())])
-preprocesador=ColumnTransformer(transformers=[("num",numerical_transformer, variables_continuas),
-                                ("cat",categorical_transformer,variables_categorias)])
-pipeline=Pipeline(steps=[("transformacion",preprocesador)])
-dfxx=pipeline.fit_transform(dfx)
 
-
-#Metodo integrado
-select=SelectFromModel(Lasso(alpha = 0.001, max_iter=10000),max_features=30)
-select.fit(dfxx,dfy)
-#Coeficientes del estimador, los mas cercanos a cero son eliminados
-select.estimator_.coef_
-
-xnew=select.get_support()
-xtrain=dfxx[:,xnew]
-#falta para el xtest
-dftestx=pipeline.transform(tabla2)
-xtest=dftestx[:,xnew]
-
-
-# Pasar el array a DataFrame
-columnas_numericas = variables_continuas
-categorical_transformer = preprocesador.named_transformers_['cat']
-categorias = categorical_transformer.named_steps['onehot'].get_feature_names_out(variables_categorias)
-nuevas_columnas = columnas_numericas + list(categorias)
-
-X_df = pd.DataFrame(dfxx, columns=nuevas_columnas)
-
-#Selección de variables 
-mcla = LogisticRegression()
-mdtc= DecisionTreeClassifier()
-mrfc= RandomForestClassifier()
-mgbc=GradientBoostingClassifier()
-modelos= [ mcla, mdtc, mrfc, mgbc]
-
-var_names=funciones.sel_variables1(modelos,X_df,dfy,threshold=0.25)
-var_names.shape
-
-dfx2=X_df[var_names] ### matriz con variables seleccionadas
-X_df.info()
-dfx2.info()"""
 #Como el profesor
 cat=dfx.select_dtypes(include="object").columns
 tabla[cat]
@@ -114,7 +70,7 @@ for i in range(30):
     df_actual=0
     var_names=funciones.sel_variables(modelos, x, dfy, threshold="{}*mean".format(thres))
     xtrain=x[var_names]
-    accu_xtrain=funciones.medir_modelos(modelos,"accuracy",xtrain,dfy,5)
+    accu_xtrain=funciones.medir_modelos(modelos,"accuracy",xtrain,dfy,10)
     df=accu_xtrain.mean(axis=0)
     df_actual = pd.DataFrame(df, columns=['threshold {}'.format(thres)])
     df_resultado = pd.concat([df_resultado, df_actual], axis=1)
@@ -130,3 +86,28 @@ plt.tight_layout()
 
 df.idxmax(axis=0)
 #Los dos modelos a tunear son random_forest y decision_tree
+
+mcla = LogisticRegression()
+mdtc= DecisionTreeClassifier()
+mrfc= RandomForestClassifier()
+mgbc=GradientBoostingClassifier()
+modelos= [ mcla, mdtc, mrfc, mgbc]
+var_names=funciones.sel_variables(modelos, x, dfy, threshold="2.6*mean")
+var_names.shape
+xtrainf=x[var_names]
+#al final se deja este valor que da como resultado 15 variables
+#Tuning para DTC
+
+#Tunnig para RFC
+parameters = {'max_depth': [ 5, 7, 10, 12],
+              'max_features': [0.05,0.4, 1],
+              'max_leaf_nodes': [9, 15, 17, 20],
+              'min_samples_leaf': [ 1,3,5, 7],
+              'n_estimators': [5, 8, 15, 20]}
+
+rfctuning=RandomForestClassifier()
+grid_search=GridSearchCV(rfctuning, parameters, scoring="accuracy",cv=10, n_jobs=-1)
+grid_result=grid_search.fit(xtrainf, dfy)
+grid_result.best_params_
+grid_result.best_score_
+
