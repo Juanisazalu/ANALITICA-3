@@ -51,8 +51,8 @@ var_names.shape
 xtrain=x[var_names]
 
 #Medir los modelos 
-accu_x=funciones.medir_modelos(modelos,"accuracy",x,dfy,20) ## base con todas las variables 
-accu_xtrain=funciones.medir_modelos(modelos,"accuracy",xtrain,dfy,20) ### base con variables seleccionadas
+accu_x=funciones.medir_modelos(modelos,"f1",x,dfy,20) ## base con todas las variables 
+accu_xtrain=funciones.medir_modelos(modelos,"f1",xtrain,dfy,20) ### base con variables seleccionadas
 
 
 accu=pd.concat([accu_x,accu_xtrain],axis=1)
@@ -70,7 +70,7 @@ for i in range(30):
     df_actual=0
     var_names=funciones.sel_variables(modelos, x, dfy, threshold="{}*mean".format(thres))
     xtrain=x[var_names]
-    accu_xtrain=funciones.medir_modelos(modelos,"accuracy",xtrain,dfy,10)
+    accu_xtrain=funciones.medir_modelos(modelos,"f1",xtrain,dfy,10)
     df=accu_xtrain.mean(axis=0)
     df_actual = pd.DataFrame(df, columns=['threshold {}'.format(thres)])
     df_resultado = pd.concat([df_resultado, df_actual], axis=1)
@@ -106,7 +106,7 @@ parameters = {'max_depth': [ 5, 7, 10, 12],
               'n_estimators': [5, 8, 15, 20]}
 
 rfctuning=RandomForestClassifier()
-grid_search=GridSearchCV(rfctuning, parameters, scoring="accuracy",cv=10, n_jobs=-1)
+grid_search=GridSearchCV(rfctuning, parameters, scoring="f1",cv=10, n_jobs=-1)
 grid_result=grid_search.fit(xtrainf, dfy)
 grid_result.best_params_
 grid_result.best_score_
