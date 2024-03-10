@@ -104,7 +104,7 @@ ALTER TABLE tabla_completa2 DROP COLUMN "index:1";
 ALTER TABLE tabla_completa2 DROP COLUMN "index:2";
 ALTER TABLE tabla_completa2 DROP COLUMN "EmployeeID:1";
 ALTER TABLE tabla_completa2 DROP COLUMN "EmployeeID:2";
-ALTER TABLE tabla_completa2 DROP COLUMN "EmployeeID";
+--ALTER TABLE tabla_completa2 DROP COLUMN "EmployeeID";--
 ALTER TABLE tabla_completa2 DROP COLUMN 'infodate';
 ALTER TABLE tabla_completa2 DROP COLUMN 'datesurvey';
 ALTER TABLE tabla_completa2 DROP COLUMN 'surveydate';

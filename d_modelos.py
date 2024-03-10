@@ -128,7 +128,7 @@ parameters1 = {'class_weight': ['balanced'],
 """
 
 #Tunnig para RFC
-parameters1 = {'class_weight': ['balanced'],
+parameters1 = {
               'max_depth': [5, 7, 10],
               'max_features': ['sqrt',0.05,0.4],
               'max_leaf_nodes': [ 9, 15, 17],
@@ -179,9 +179,43 @@ cm_display = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels=['No r
 cm_display.plot()
 plt.show()
 
-joblib.dump(dtc_final, "dtc_final.pkl") ## 
-joblib.dump(rfc_final, "m_lreg.pkl") ## 
-#joblib.dump(cat, "list_cat.pkl") ### para realizar imputacion
-joblib.dump(cat, "list_dummies.pkl")  ### para convertir a dummies
-joblib.dump(var_names, "var_names.pkl")  ### para variables con que se entrena modelo
-joblib.dump(scaler, "scaler.pkl") ## 
+##### Despliegue: Mirar importancia de variables para tomar acciones ###
+importances = dtc_final.feature_importances_
+
+# Crear un DataFrame con las importancias y los nombres de las variables
+feature_importances_df = pd.DataFrame({'Feature': xtrainf.columns, 'Importance': importances})
+
+# Ordenar el DataFrame por importancia en orden descendente
+feature_importances_df = feature_importances_df.sort_values(by='Importance', ascending=False)
+
+# Visualizar las importancias de las variables
+plt.figure(figsize=(10, 6))
+plt.barh(feature_importances_df['Feature'], feature_importances_df['Importance'], color='skyblue')
+plt.xlabel('Importance')
+plt.ylabel('Feature')
+plt.title('Feature Importances')
+plt.gca().invert_yaxis()  # Invertir el eje y para mostrar la importancia más alta arriba
+plt.show()
+
+# Supongamos que ya tienes un modelo entrenado 'clf' y tus datos de prueba 'X_test'
+predictions = dtc_final.predict(xtrainf)
+
+# Para obtener el camino de decisión para una instancia específica (por ejemplo, la primera)
+instance_path = dtc_final.decision_path(xtrainf.iloc[[0]])
+
+# Imprimir el camino de decisión
+print(f"Camino de decisión para la instancia 0: {instance_path}")
+
+feature_names = xtrainf.columns.tolist()
+# También puedes visualizar el árbol para entender mejor las decisiones
+from sklearn.tree import plot_tree
+plt.figure(figsize=(20, 10))
+plot_tree(dtc_final, feature_names=feature_names, filled=True)
+plt.show()
+
+joblib.dump(dtc_final, "salidas\\dtc_final.pkl") ## 
+joblib.dump(rfc_final, "salidas\\m_lreg.pkl") ## 
+#joblib.dump(cat, "salidas\\list_cat.pkl") ### para realizar imputacion
+joblib.dump(cat, "salidas\\list_dummies.pkl")  ### para convertir a dummies
+joblib.dump(var_names, "salidas\\var_names.pkl")  ### para variables con que se entrena modelo
+joblib.dump(scaler, "salidas\\scaler.pkl") ## 
