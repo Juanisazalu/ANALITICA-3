@@ -13,13 +13,14 @@ from sklearn.svm import SVC
 import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import GridSearchCV
-
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.metrics import f1_score
 from sklearn.model_selection import RandomizedSearchCV
-
+import joblib  ### para guardar modelos
 import numpy as np
 from sklearn.model_selection import cross_val_predict, cross_val_score, cross_validate
-
+from sklearn import metrics
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 
 #Carga de taablas
 tabla=pd.read_csv("tabla_exploración.csv")
@@ -42,6 +43,7 @@ scaler.fit(df_dum)
 xnor=scaler.transform(df_dum)
 x=pd.DataFrame(xnor,columns=df_dum.columns)
 x.columns
+
 #Selección de variables 
 mcla = LogisticRegression()
 mdtc= DecisionTreeClassifier()
@@ -97,37 +99,9 @@ var_names.shape
 xtrainf=x[var_names]
 #al final se deja este valor que da como resultado 7 variables
 
-#Buscamos los parametros para los modelos genericos
-"""mdtc= DecisionTreeClassifier()
-mdtc.fit(xtrainf, dfy)
-y_pred = mdtc.predict(xtrainf)
-f1 = f1_score(dfy, y_pred)
-hyperparameters0 = mdtc.get_params()
-
-mrfc= RandomForestClassifier()
-mrfc.fit(xtrainf, dfy)
-y_pred = mrfc.predict(xtrainf)
-f1 = f1_score(dfy, y_pred)
-hyperparameters1 = mrfc.get_params()"""
-
-    
-
 #Tuning para DTC
-"""parameters0 = {  'ccp_alpha': [0.0],
-                'class_weight': [None],
-                'criterion': ['gini'],
-                'max_depth': [ None, 7, 10, 12],
-                'max_features': [None,0.4, 1],
-                'max_leaf_nodes': [None, 15, 17, 20],
-                'min_impurity_decrease': [0.0],
-                'min_samples_leaf': [ 1,3,5, 7],
-                'min_samples_split': [2],
-                'min_weight_fraction_leaf': [0.0],
-                'random_state': [None],
-                'splitter': ['best']}"""
-
-
-parameters0 = {'max_depth': [ None, 7, 10, 12],
+parameters0 = {'class_weight': ['balanced'],
+              'max_depth': [ None, 7, 10, 12],
               'max_features': [None,0.4, 1],
               'max_leaf_nodes': [None, 15, 17, 20],
               'min_samples_leaf': [ 1,3,5, 7]}
@@ -144,11 +118,20 @@ pd_resultados0[["params","mean_test_score"]].sort_values(by="mean_test_score", a
 
 dtc_final=grid_result0.best_estimator_ ### Guardar el modelo con hyperparameter tunning
 
-
-#Tunnig para RFC
-parameters1 = {'max_depth': [ None, 5, 7, 10],
+"""
+parameters1 = {'class_weight': ['balanced'],
+              'max_depth': [ None, 5, 7, 10],
               'max_features': ['sqrt',0.05,0.4],
               'max_leaf_nodes': [None, 9, 15, 17],
+              'min_samples_leaf': [ 1,3,5, 7],
+              'n_estimators': [ 100, 150, 200]}
+"""
+
+#Tunnig para RFC
+parameters1 = {'class_weight': ['balanced'],
+              'max_depth': [5, 7, 10],
+              'max_features': ['sqrt',0.05,0.4],
+              'max_leaf_nodes': [ 9, 15, 17],
               'min_samples_leaf': [ 1,3,5, 7],
               'n_estimators': [ 100, 150, 200]}
 
@@ -164,12 +147,41 @@ pd_resultados1[["params","mean_test_score"]].sort_values(by="mean_test_score", a
 
 rfc_final=grid_result1.best_estimator_ ### Guardar el modelo con hyperparameter tunning
 
+#Testear el modelo
+eval=cross_validate(rfc_final,xtrainf,dfy,cv=10,scoring="f1",return_train_score=True)
+eval2=cross_validate(dtc_final,xtrainf,dfy,cv=10,scoring="f1",return_train_score=True)
 
-### función para exportar y guardar objetos de python (cualqueira)
 
-joblib.dump(rf_final, "rf_final.pkl") ## 
-joblib.dump(m_lreg, "m_lreg.pkl") ## 
-joblib.dump(list_cat, "list_cat.pkl") ### para realizar imputacion
-joblib.dump(list_dummies, "list_dummies.pkl")  ### para convertir a dummies
+#### convertir resultado de evaluacion entrenamiento y evaluacion en data frame para RF
+train_rfc=pd.DataFrame(eval['train_score'])
+test_rfc=pd.DataFrame(eval['test_score'])
+train_test_rfc=pd.concat([train_rfc, test_rfc],axis=1)
+train_test_rfc.columns=['train_score','test_score']
+
+#### convertir resultado de evaluacion entrenamiento y evaluacion en data frame para RL
+train_dtc=pd.DataFrame(eval2['train_score'])
+test_dtc=pd.DataFrame(eval2['test_score'])
+train_test_dtc=pd.concat([train_dtc, test_dtc],axis=1)
+train_test_dtc.columns=['train_score','test_score']
+
+train_test_rfc["test_score"].mean()
+train_test_dtc["test_score"].mean()
+
+#Se escoge el modelo de arbol de decision 
+#Analisis modelos para random forest
+print ("Train - Accuracy :", metrics.accuracy_score(dfy, dtc_final.predict(xtrainf)))
+print ("Train - classification report:\n", metrics.classification_report(dfy, dtc_final.predict(xtrainf)))
+
+# Matriz de confusion
+cm= confusion_matrix(dfy, dtc_final.predict(xtrainf))
+# Visualización de la matriz de confusion
+cm_display = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels=['No renuncia', 'renuncia'])
+cm_display.plot()
+plt.show()
+
+joblib.dump(dtc_final, "dtc_final.pkl") ## 
+joblib.dump(rfc_final, "m_lreg.pkl") ## 
+#joblib.dump(cat, "list_cat.pkl") ### para realizar imputacion
+joblib.dump(cat, "list_dummies.pkl")  ### para convertir a dummies
 joblib.dump(var_names, "var_names.pkl")  ### para variables con que se entrena modelo
 joblib.dump(scaler, "scaler.pkl") ## 
