@@ -41,8 +41,7 @@ encuesta_gerente["SurveyDate"]=pd.to_datetime(encuesta_gerente["SurveyDate"])
 
 info_retiros["retirementDate"]
 info_retiros["retirementDate"]=pd.to_datetime(info_retiros["retirementDate"])
-len(info_retiros["EmployeeID"].value_counts())
-len(general_data["EmployeeID"].value_counts())
+
 #Valores unicos para las variables exploración inicial 
 for tabla in [general_data,encuesta_empleado,encuesta_gerente,info_retiros]:
     print("------------------------------------") #cambio de tabla
@@ -81,9 +80,6 @@ tabla=pd.read_sql("""select *  from tabla_completa """ , con)
 
 #Relleno de nulos
 tabla.isnull().sum()
-#Con la funcion no da
-cat= [x for x in tabla.columns if tabla[x].dtypes =="O"]
-funciones.imputar_f(tabla,cat)
 
 #Manualmente
 tabla["NumCompaniesWorked"]=tabla["NumCompaniesWorked"].apply(lambda x: x if not pd.isnull(x) else int(tabla["NumCompaniesWorked"].median()))
@@ -96,7 +92,7 @@ tabla.isnull().sum()
 #Convertir a minusculas el nombre de las columnas
 tabla.columns=tabla.columns.str.lower()
 
-#Analisis relacion entre variables numericas
+#Analisis relacion entre variables numericas como matriz de correlación
 figure(figsize=(20,6))
 sns.heatmap(tabla.corr(),cmap = sns.cubehelix_palette(as_cmap=True), annot = True, fmt = ".2f")
 
@@ -121,15 +117,19 @@ tabla.drop("gender", axis=1, inplace=True)
 #Conteo de empleados que renunciaron
 len(tabla[tabla["v_objetivo"]==1])
 
+#Eliminación de la columna employeeid
 tabla.drop("employeeid", axis=1, inplace=True)
-tabla.to_csv('tabla_exploración.csv', index=False)
+tabla.to_csv('tabla_exploración.csv', index=False) #Carga base para exploración
 tabla.info()
 len(tabla.columns)
 
-#Preprocesamiento para el test
+#-----------------------------------------------------------------------------------------------
+#Preprocesamiento para el test 
+#Carga de tabla 
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 tabla2=pd.read_sql("""select *  from tabla_completa2 """ , con)
 
+#Relleno de nulos
 len(tabla2.columns)
 tabla2.isnull().sum()
 tabla2["NumCompaniesWorked"]=tabla2["NumCompaniesWorked"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["NumCompaniesWorked"].median()))
@@ -137,7 +137,10 @@ tabla2["EnvironmentSatisfaction"]=tabla2["EnvironmentSatisfaction"].apply(lambda
 tabla2["JobSatisfaction"]=tabla2["JobSatisfaction"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["JobSatisfaction"].median()))
 tabla2["WorkLifeBalance"]=tabla2["WorkLifeBalance"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["WorkLifeBalance"].median()))
 tabla2.isnull().sum()
+
+#Convertir a minuscula 
 tabla2.columns=tabla2.columns.str.lower()
 
+#Guardado de tabla
 tabla2.to_csv('tabla2.csv', index=False)
 

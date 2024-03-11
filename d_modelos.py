@@ -213,7 +213,7 @@ ax.set_ylim([0, 1])
 train_test_rfc["test_score"].mean()
 train_test_dtc["test_score"].mean()
 
-#Se escoge el modelo de arbol de decision 
+#Se escoge el modelo de arbol de decision ----------------------------------------------------------
 #Analisis modelos para random forest
 print ("Train - Accuracy :", metrics.accuracy_score(dfy, dtc_final.predict(xtrainf)))
 print ("Train - classification report:\n", metrics.classification_report(dfy, dtc_final.predict(xtrainf)))
@@ -237,6 +237,7 @@ plt.ylabel('Feature')
 plt.title('Feature Importances')
 plt.gca().invert_yaxis()  # Invertir el eje y para mostrar la importancia más alta arriba
 plt.show()
+
 
 #Se guarda en un excel
 feature_importances_df.to_excel("salidas\\Peso_variables.xlsx", index=False)
