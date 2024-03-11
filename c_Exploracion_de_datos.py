@@ -21,24 +21,13 @@ import plotly.figure_factory as ff
 tabla=pd.read_csv("tabla_exploración.csv")
 tabla.columns
 
-cat= [x for x in tabla.columns if tabla[x].dtypes =="O"]
-continuas= tabla.select_dtypes(exclude='object')
-continuas=continuas.columns
+cat= tabla.select_dtypes(include='object').columns
+continuas= tabla.select_dtypes(exclude='object').columns
 ### explorar variable respuesta ###
 # crear dataset
 fig=tabla.v_objetivo.hist(bins=20,ec='black') ## no hay atípicos
 fig.grid(False)
 plt.show()
-
-"""boxprops = dict(linestyle='-', color='black')
-medianprops = dict(linestyle='-',  color='black')
-fig=tabla.boxplot("v_objetivo",patch_artist=True,
-                boxprops=boxprops,
-                medianprops=medianprops,
-                whiskerprops=dict(color='black'),
-                showmeans=True)
-fig.grid(False)
-plt.show()"""
 
 ### Dimensiones del dataset
 tabla.shape
@@ -49,17 +38,22 @@ tabla.describe()
 
 tabla.info()
 
-#explorar variables numéricas con histograma
-fig=tabla[continuas].hist(bins=50, figsize=(40,30),grid=False,ec='black')
-plt.show() 
 
-scatter_matrix(tabla[continuas], figsize=(100, 100))
-plt.show()
+#Exploracion variables numericas
+plt.figure(figsize=(25, 10))
+plt.subplot(2,3,1)
+tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
+plt.subplot(2,3,2)
+tabla['department'].value_counts().plot(kind='pie',autopct='%.2f')
+plt.subplot(2,3,3)
+tabla['jobrole'].value_counts().plot(kind='pie',autopct='%.2f')
+plt.subplot(2,3,4)
+tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
+plt.subplot(2,3,5)
+tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
-cont=tabla[continuas]
-corr_matrix = cont.corr()
 
-### Gráfico de distribución de las variables númericas
+#explorar variables numéricas 
 fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(9, 5))
 axes = axes.flat
 columnas_numeric = tabla.select_dtypes(include=['float64', 'int']).columns
@@ -88,7 +82,6 @@ fig.suptitle('Distribución variables numéricas', fontsize = 10, fontweight = "
 
 
 ### relación de variables continuas con variable objetivo
-# Añadir etiquetas y título
 sns.boxplot(data=tabla, x="v_objetivo", y="age")
 sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome")
 sns.boxplot(data=tabla, x="v_objetivo", y="education")
@@ -105,19 +98,6 @@ sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction")
 sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance")
 sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")
 
-##### Variable categóricas ####
-plt.figure(figsize=(25, 10))
-plt.subplot(2,3,1)
-tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
-plt.subplot(2,3,2)
-tabla['department'].value_counts().plot(kind='pie',autopct='%.2f')
-plt.subplot(2,3,3)
-tabla['jobrole'].value_counts().plot(kind='pie',autopct='%.2f')
-plt.subplot(2,3,4)
-tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
-plt.subplot(2,3,5)
-tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
-
 ###Relacion de variables categorica con variable respuesta
 tabla[cat].columns
 
@@ -131,3 +111,4 @@ plt.xlabel('Estado civil')
 plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
+
