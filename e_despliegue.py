@@ -1,8 +1,8 @@
 import joblib  ### para guardar modelos
 
-f_final = joblib.load("salidas\\rf_final.pkl")
-m_lreg = joblib.load("salidas\\m_lreg.pkl")
-list_cat=joblib.load("salidas\\list_cat.pkl")
+f_final = joblib.load("salidas\\dtc_final.pkl")
+rfc_final = joblib.load("salidas\\rfc_final.pkl")
+#list_cat=joblib.load("salidas\\list_cat.pkl")
 list_dummies=joblib.load("salidas\\list_dummies.pkl")
 var_names=joblib.load("salidas\\var_names.pkl")
 scaler=joblib.load("salidas\\scaler.pkl") 
@@ -14,6 +14,16 @@ import joblib
 import openpyxl ## para exportar a excel
 import numpy as np
 
+tabla2=pd.read_csv("tabla2.csv")
+
+
+conn=sql.connect("data\\db_basedatos")
+cur=conn.cursor()
+funciones.ejecutar_sql('Preprocesamiento.sql',cur) ### con las fechas actualizadas explicativas 2023- predecir 2024
+df1=pd.read_sql('''select  * from tabla_exploracion''',conn)
+df2=pd.read_sql('''select  * from tabla2''',conn)
+
+
 
 ###### el despliegue consiste en dejar todo el código listo para una ejecucion automática en el periodo definido:
 ###### en este caso se ejecutara el proceso de entrenamiento y prediccion anualmente.
@@ -21,7 +31,7 @@ if __name__=="__main__":
 
 
     ### conectarse a la base de datos ###
-    conn=sql.connect("data\\db_empleados")
+    """conn=sql.connect("data\\db_basedatos")
     cur=conn.cursor()
 
     ### Ejecutar sql de preprocesamiento inicial y juntarlo 
@@ -29,21 +39,21 @@ if __name__=="__main__":
 
     funciones.ejecutar_sql('Preprocesamiento.sql',cur) ### con las fechas actualizadas explicativas 2023- predecir 2024
     df=pd.read_sql('''select  * from tabla_completa2''',conn)
-
-  
+    """
+    tabla2=pd.read_csv("tabla2.csv")
     ####Otras transformaciones en python (imputación, dummies y seleccion de variables)
-    df_t= funciones.preparar_datos(df)
+    df_t= funciones.preparar_datos(tabla2)
 
 
     ##Cargar modelo y predecir
     m_dtc = joblib.load("salidas\\dtc_final.pkl")
     predicciones=m_dtc.predict(df_t)
     pd_pred=pd.DataFrame(predicciones, columns=['renuncia'])
-
+    pd_pred[pd_pred["renuncia"]==1]
 
     ###Crear base con predicciones ####
 
-    perf_pred=pd.concat([df['EmployeeID'],df_t,pd_pred],axis=1)
+    perf_pred=pd.concat([tabla2['EmployeeID'],df_t,pd_pred],axis=1)
    
     ####LLevar a BD para despliegue 
     perf_pred.loc[:,['EmployeeID', 'renuncia']].to_sql("renuncia_pred",conn,if_exists="replace") ## llevar predicciones a BD con ID Empleados
@@ -59,5 +69,5 @@ if __name__=="__main__":
    
     pred.to_excel("salidas\\prediccion.xlsx")   #### exportar predicciones mas bajas y variables explicativas
     coeficientes.to_excel("salidas\\coeficientes.xlsx") ### exportar coeficientes para analizar predicciones
-    
+
     

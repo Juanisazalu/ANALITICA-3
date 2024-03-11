@@ -123,12 +123,10 @@ len(tabla[tabla["v_objetivo"]==1])
 
 tabla.drop("employeeid", axis=1, inplace=True)
 tabla.to_csv('tabla_exploración.csv', index=False)
-#Posibles modelos
-
 tabla.info()
 len(tabla.columns)
 
-#Tabla para test
+#Preprocesamiento para el test
 funciones.ejecutar_sql('Preprocesamiento.sql',cur)
 tabla2=pd.read_sql("""select *  from tabla_completa2 """ , con)
 
