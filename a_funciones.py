@@ -9,6 +9,8 @@ from sklearn.preprocessing import StandardScaler ## escalar variables
 from itertools import product
 import scipy.stats as ss
 ####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto
+
+#Esta función permite hacer una prueba chi-cuadrado a las variables categoricas 
 def prueba_chicuadrado(tabla):
     tabla_cat = tabla.select_dtypes(include=['object']).copy()
     cat_var1=tuple(tabla.select_dtypes(include=["object"]))
@@ -21,11 +23,11 @@ def prueba_chicuadrado(tabla):
     resultado=[x for x in result if x[2]>0.05]
     return resultado
     
-
+#Esta función permite ver los valores unicos por variable
 def cat_summary(dataframe, col_name):
     print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
                         'Ratio': 100 * dataframe[col_name].value_counts() / len(dataframe)}))
-    print('##########################################')
+    print('#---------------------------------------------#')
     
 ###########Esta función permite ejecutar un archivo  con extensión .sql que contenga varias consultas
 def ejecutar_sql (nombre_archivo, cur):
@@ -34,7 +36,7 @@ def ejecutar_sql (nombre_archivo, cur):
   sql_file.close
   cur.executescript(sql_as_string)
   
-  
+ 
 def imputar_f(df,list_cat):  
         
     
@@ -70,17 +72,6 @@ def sel_variables(modelos,X,y,threshold):
     
     return var_names_ac
 
-def sel_variables1(modelos, X, y, threshold):
-    var_names_ac = np.array([])
-
-    for modelo in modelos:
-        modelo.fit(X, y)
-        sel = SelectFromModel(modelo, threshold=threshold)
-        var_names = X.columns[sel.get_support()]
-        var_names_ac = np.append(var_names_ac, var_names)
-        var_names_ac = np.unique(var_names_ac)
-        
-    return var_names_ac
 
 
 def medir_modelos(modelos,scoring,X,y,cv):
@@ -95,7 +86,7 @@ def medir_modelos(modelos,scoring,X,y,cv):
     return metric_modelos
 
 
-
+#La función se modifica para adaptarlo a nuestro programa 
 def preparar_datos (df):
    
     
