@@ -138,7 +138,7 @@ tabla2["JobSatisfaction"]=tabla2["JobSatisfaction"].apply(lambda x: x if not pd.
 tabla2["WorkLifeBalance"]=tabla2["WorkLifeBalance"].apply(lambda x: x if not pd.isnull(x) else int(tabla2["WorkLifeBalance"].median()))
 tabla2.isnull().sum()
 
-#Convertir a minuscula 
+#Convertir a minúscula 
 tabla2.columns=tabla2.columns.str.lower()
 
 #Guardado de tabla

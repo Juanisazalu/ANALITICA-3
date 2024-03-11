@@ -79,7 +79,7 @@ sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrain, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
 
-# "funcion" para buscar el mejor threshold que seleccina las variables para cada modelo.------------------
+# "función" para buscar el mejor threshold que seleccina las variables para cada modelo.------------------
 df_resultado = pd.DataFrame()
 thres=0.5
 for i in range(30):
@@ -93,14 +93,14 @@ for i in range(30):
     thres+=0.15
     thres=round(thres,2)
 
-#Grafica de los resultados 
+#Gráfica de los resultados 
 df=df_resultado.T
 plt.figure(figsize=(10,10))
 sns.lineplot(data=df)
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 
-#Mwjoe threshold para cada modelo.----------------
+#Mejor threshold para cada modelo.----------------
 df.idxmax(axis=0)
 
 #Los dos modelos a tunear son random_forest y decision_tree con un trheshold de 2.2 por la media, en el documento se explica 
@@ -129,11 +129,11 @@ sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrainf, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
 
-#comparacion de modelo con variables completas, con 8 variables y con 5 variables
+#Comparación de modelo con variables completas, con 8 variables y con 5 variables
 comp_final=pd.concat([accu, accu_xtrain],axis=1)
 comp_final.columns=['rl', 'dt', 'rf', 'gb',
        'rl_Sel_f', 'dt_sel_f', 'rf_sel_f', 'gb_Sel_f','rl_Sel', 'dt_sel', 'rf_sel', 'gb_Sel']
-#grafico para comparar
+#Gráfico para comparar
 sns.boxplot(data=comp_final, palette="Set3")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
@@ -218,9 +218,9 @@ train_test_dtc["test_score"].mean()
 print ("Train - Accuracy :", metrics.accuracy_score(dfy, dtc_final.predict(xtrainf)))
 print ("Train - classification report:\n", metrics.classification_report(dfy, dtc_final.predict(xtrainf)))
 
-# Matriz de confusion
+# Matriz de confusión
 cm= confusion_matrix(dfy, dtc_final.predict(xtrainf))
-# Visualización de la matriz de confusion
+# Visualización de la matriz de confusión
 cm_display = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels=['No renuncia', 'renuncia'])
 cm_display.plot()
 plt.show()
