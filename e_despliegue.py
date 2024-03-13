@@ -1,19 +1,19 @@
 import joblib  ### para guardar modelos
 
-f_final = joblib.load("salidas\\dtc_final.pkl")
+"""f_final = joblib.load("salidas\\dtc_final.pkl")
 rfc_final = joblib.load("salidas\\rfc_final.pkl")
 #list_cat=joblib.load("salidas\\list_cat.pkl")
 list_dummies=joblib.load("salidas\\list_dummies.pkl")
 var_names=joblib.load("salidas\\var_names.pkl")
 scaler=joblib.load("salidas\\scaler.pkl") 
-
+"""
 import a_funciones as funciones  ###archivo de funciones propias
 import pandas as pd ### para manejo de datos
 import sqlite3 as sql
 import joblib
 import openpyxl ## para exportar a excel
 import numpy as np
-
+"""
 tabla2=pd.read_csv("tabla2.csv")
 
 
@@ -22,7 +22,7 @@ cur=conn.cursor()
 funciones.ejecutar_sql('Preprocesamiento.sql',cur) ### con las fechas actualizadas explicativas 2023- predecir 2024
 df1=pd.read_sql('''select  * from tabla_exploracion''',conn)
 df2=pd.read_sql('''select  * from tabla2''',conn)
-
+"""
 
 
 ###### el despliegue consiste en dejar todo el código listo para una ejecucion automática en el periodo definido:
@@ -41,22 +41,21 @@ if __name__=="__main__":
     df=pd.read_sql('''select  * from tabla_completa2''',conn)
     """
     tabla2=pd.read_csv("tabla2.csv")
+    xtest=tabla2.drop("employeeid",axis=1)
     ####Otras transformaciones en python (imputación, dummies y seleccion de variables)
-    df_t= funciones.preparar_datos(tabla2)
-
-
+    df_t= funciones.preparar_datos(xtest)
+    
     ##Cargar modelo y predecir
     m_dtc = joblib.load("salidas\\dtc_final.pkl")
     predicciones=m_dtc.predict(df_t)
     pd_pred=pd.DataFrame(predicciones, columns=['renuncia'])
-    pd_pred[pd_pred["renuncia"]==1]
-
+    pd_pred.value_counts()
     ###Crear base con predicciones ####
 
-    perf_pred=pd.concat([tabla2['EmployeeID'],df_t,pd_pred],axis=1)
+    perf_pred=pd.concat([tabla2['employeeid'],df_t,pd_pred],axis=1)
    
     ####LLevar a BD para despliegue 
-    perf_pred.loc[:,['EmployeeID', 'renuncia']].to_sql("renuncia_pred",conn,if_exists="replace") ## llevar predicciones a BD con ID Empleados
+    perf_pred.loc[:,['employeeid', 'renuncia']].to_sql("renuncia_pred",conn,if_exists="replace") ## llevar predicciones a BD con ID Empleados
     
 
     ####ver_predicciones_bajas ###

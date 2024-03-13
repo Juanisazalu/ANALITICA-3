@@ -94,8 +94,8 @@ LEFT JOIN encuesta_empleado2 as ee2 ON gd2.EmployeeID = ee2.EmployeeID
 LEFT JOIN encuesta_gerente2 as eg2 ON eg2.EmployeeID = gd2.EmployeeID
 ;
 
-DELETE FROM tabla_completa2 WHERE EXISTS (SELECT * FROM info_retiros AS ire 
-  WHERE ire.EmployeeID = tabla_completa2.EmployeeID);
+--DELETE FROM tabla_completa2 WHERE EXISTS (SELECT * FROM info_retiros AS ire 
+--  WHERE ire.EmployeeID = tabla_completa2.EmployeeID);
 --eliminar variables-
 
 

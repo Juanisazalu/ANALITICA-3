@@ -59,7 +59,7 @@ var_names=funciones.sel_variables(modelos, x, dfy, threshold="2.2*mean")
 var_names.shape
 
 #Variables elegidas incialmente con el threshold 2.2 
-xtrain=x[var_names] #9 variables
+xtrain=x[var_names] #8 variables
 
 
 #Medir los modelos 
@@ -272,3 +272,23 @@ joblib.dump(rfc_final, "salidas\\rfc_final.pkl") ##
 joblib.dump(cat, "salidas\\list_dummies.pkl")  ### para convertir a dummies
 joblib.dump(var_names, "salidas\\var_names.pkl")  ### para variables con que se entrena modelo
 joblib.dump(scaler, "salidas\\scaler.pkl") ## 
+
+
+###---------------------------------
+lista=dtc_final.predict(xtrainf)
+df=pd.DataFrame(lista)
+df.value_counts()
+
+tabla2=pd.read_csv("tabla2.csv")
+xtest=tabla2.drop("employeeid",axis=1)
+dfid=tabla2["employeeid"]
+df_t= funciones.preparar_datos(xtest)
+lista1=dtc_final.predict(df_t)
+df1=pd.DataFrame(lista1)
+df1.value_counts()
+
+tabla2=pd.read_csv("tabla2.csv")
+df_t= funciones.preparar_datos(tabla2)
+lista1=rfc_final.predict(df_t)
+df1=pd.DataFrame(lista1)
+df1.value_counts()
