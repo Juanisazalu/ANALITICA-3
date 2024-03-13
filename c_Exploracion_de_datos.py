@@ -102,7 +102,6 @@ sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")
 tabla[cat].columns
 
 cross_tab = pd.crosstab(tabla['businesstravel'], tabla['v_objetivo'])
-
 # Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
@@ -112,3 +111,43 @@ plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
+
+cross_tab = pd.crosstab(tabla['department'], tabla['v_objetivo'])
+# Crear el gráfico de barras apiladas
+plt.figure(figsize=(8, 6))
+cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
+plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
+plt.xlabel('Estado civil')
+plt.ylabel('Número de Personas')
+plt.legend(title='Deserción')
+plt.show()
+
+cross_tab = pd.crosstab(tabla['educationfield'], tabla['v_objetivo'])
+# Crear el gráfico de barras apiladas
+plt.figure(figsize=(8, 6))
+cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
+plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
+plt.xlabel('Estado civil')
+plt.ylabel('Número de Personas')
+plt.legend(title='Deserción')
+plt.show()
+
+cross_tab = pd.crosstab(tabla['jobrole'], tabla['v_objetivo'])
+# Crear el gráfico de barras apiladas
+plt.figure(figsize=(8, 6))
+cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
+plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
+plt.xlabel('Estado civil')
+plt.ylabel('Número de Personas')
+plt.legend(title='Deserción')
+plt.show()
+
+cross_tab = pd.crosstab(tabla['maritalstatus'], tabla['v_objetivo'])
+# Crear el gráfico de barras apiladas
+plt.figure(figsize=(8, 6))
+cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
+plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
+plt.xlabel('Estado civil')
+plt.ylabel('Número de Personas')
+plt.legend(title='Deserción')
+plt.show()
