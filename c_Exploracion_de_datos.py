@@ -16,8 +16,6 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
-
-
 tabla=pd.read_csv("tabla_exploración.csv")
 tabla.columns
 

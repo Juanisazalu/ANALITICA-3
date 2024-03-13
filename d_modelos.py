@@ -265,7 +265,7 @@ from sklearn.tree import plot_tree
 plt.figure(figsize=(20, 10))
 plot_tree(dtc_final, feature_names=feature_names, filled=True)
 plt.show()
-
+#------------------------------------------------------
 joblib.dump(dtc_final, "salidas\\dtc_final.pkl") ## 
 joblib.dump(rfc_final, "salidas\\rfc_final.pkl") ## 
 #joblib.dump(cat, "salidas\\list_cat.pkl") ### para realizar imputacion
@@ -274,21 +274,3 @@ joblib.dump(var_names, "salidas\\var_names.pkl")  ### para variables con que se 
 joblib.dump(scaler, "salidas\\scaler.pkl") ## 
 
 
-###---------------------------------
-lista=dtc_final.predict(xtrainf)
-df=pd.DataFrame(lista)
-df.value_counts()
-
-tabla2=pd.read_csv("tabla2.csv")
-xtest=tabla2.drop("employeeid",axis=1)
-dfid=tabla2["employeeid"]
-df_t= funciones.preparar_datos(xtest)
-lista1=dtc_final.predict(df_t)
-df1=pd.DataFrame(lista1)
-df1.value_counts()
-
-tabla2=pd.read_csv("tabla2.csv")
-df_t= funciones.preparar_datos(tabla2)
-lista1=rfc_final.predict(df_t)
-df1=pd.DataFrame(lista1)
-df1.value_counts()

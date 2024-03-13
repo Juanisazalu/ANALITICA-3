@@ -119,6 +119,7 @@ len(tabla[tabla["v_objetivo"]==1])
 
 #Eliminación de la columna employeeid
 tabla.drop("employeeid", axis=1, inplace=True)
+
 tabla.to_csv('tabla_exploración.csv', index=False) #Carga base para exploración
 tabla.info()
 len(tabla.columns)
