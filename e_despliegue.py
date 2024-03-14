@@ -11,8 +11,8 @@ import matplotlib.pyplot as plt
 con=sql.connect("data\\db_basedatos")
 cur=con.cursor()
 
-###### el despliegue consiste en dejar todo el código listo para una ejecucion automática en el periodo definido:
-###### en este caso se ejecutara el proceso de entrenamiento y prediccion anualmente.
+###### El despliegue consiste en dejar todo el código listo para una ejecución automática en el periodo definido:
+###### en este caso se ejecutara el proceso de entrenamiento y predicción anualmente.
 if __name__=="__main__":
     #Carga de tablas
     tabla2=pd.read_csv("tabla2.csv")
@@ -40,32 +40,36 @@ if __name__=="__main__":
     #Guardado en BD
     feature_importances_df.to_sql("importancia_variables",con,if_exists="replace") ## llevar predicciones a BD con ID Empleados
 
-    #Guardar en excel
+    #Guardar en Excel
     variables_desertores.to_excel("salidas\\prediccion.xlsx")   #### exportar predicciones mas bajas y variables explicativas
     feature_importances_df.to_excel("salidas\\importancia_variables.xlsx") ### exportar coeficientes para analizar predicciones
+    
     #Ruta de la decisión
     m_dtc.tree_.node_count
     dense_matrix = pd.DataFrame(m_dtc.decision_path(df_t).todense())
     ruta= pd.concat([perf_pred, dense_matrix,], axis=1)
     ruta=ruta[ruta["renuncia"]==1]
     ruta.to_sql("Ruta_decision",con,if_exists="replace") ## llevar predicciones a BD con ID Empleados
-    #Al tener un arbol de este tamaño se hace complejo observar la ruta de decision
-    #Guardado en excel
+    #Al tener un árbol de este tamaño se hace complejo observar la ruta de decisión
+    #Guardado en Excel
     ruta=ruta.head()
     ruta.to_excel("salidas\\Ruta_decisión.xlsx") ### exportar coeficientes para analizar predicciones
     
-    #Tabla estandarizada para interpretacion
+    #Tabla estandarizada para interpretación
     estandar=pd.concat([perf_pred, df_t], axis=1)
     estandar=estandar.head()
-    #Guardado en excel
+    #Guardado en Excel
     estandar.to_excel("salidas\\valores_estandarizados.xlsx")
-#consultas para interpretar la ruta de decision del empleado dos en el documento
+    
+#consultas para interpretar la ruta de decisión del empleado dos en el documento
 #En este caso observamos el nodo 1
 m_dtc.tree_.feature[1]  
 m_dtc.tree_.threshold[1]
 m_dtc.tree_.n_node_samples[1]
 m_dtc.tree_.value[1]
-#Graficos relacionados a la clasificacion, se buscaria automatizar para que aparezcan automaticamente segun el numero de variables seleccionadas
+
+#Gráficos relacionados a la clasificación, se buscaria automatizar para que aparezcan automaticamente
+# según el número de variables seleccionadas
 tabla_graficos=pd.concat([pd_pred, tabla2], axis=1)
 tablagraf=tabla_graficos.loc[:, df_t.columns.tolist() + ['employeeid',"renuncia"]]
 
@@ -89,4 +93,4 @@ sns.boxplot(y=tablagraf.yearswithcurrmanager, x=tablagraf.renuncia)
 plt.ylabel("Años con el mismo jefe")
 plt.xlabel("Renuncia")
 plt.title("Boxplot años con el mismo jefe y renuncia")
-#La interpretacion de los graficos esta ligado a las estrategias propuestas en el documento
+#La interpretación de los gráficos esta ligado a las estrategias propuestas en el documento
