@@ -9,7 +9,7 @@ import seaborn as sns
 from itertools import product
 #Ruta 
 sys.path
-#sys.path.append('c:\\cod\\LEA3_HR\\data') ## este comanda agrega una ruta
+#sys.path.append('c:\\cod\\LEA3_HR\\data') ## este comanda agrega una ruta.
 
 #Lectura de archivos
 encuesta_empleado=pd.read_csv("data\employee_survey_data.csv")

@@ -25,7 +25,7 @@ cat= tabla.select_dtypes(include='object').columns
 continuas= tabla.select_dtypes(exclude='object').columns
 
 ### explorar variable respuesta ###
-# se crea el dataset y se muestra en un grafico de barras su comportamiento
+# se crea el dataset y se muestra en un grafico de barras su comportamiento.
 fig=tabla.v_objetivo.hist(bins=20,ec='black') ## no hay atípicos
 fig.grid(False)
 plt.show()

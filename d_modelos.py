@@ -27,7 +27,7 @@ from sklearn import tree ###para ajustar arboles de decisión
 #Carga de tabla
 tabla=pd.read_csv("tabla_exploración.csv")# se llama igual a la tabla cargada en exploración ya que no se modifico ninguna fila o columna en la exploración
 
-#Separación de variables explicativas con variable objetivo
+#Separación de variables explicativas con variable objetivo.
 dfx=tabla.iloc[:,:-1]
 dfy=tabla.iloc[:,-1]
 

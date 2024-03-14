@@ -1,5 +1,0 @@
-.ipynb_checkpoints
-__pycache__
-rf_final.pkl
-caso_estudio_HR
-lea3

@@ -28,7 +28,7 @@ if __name__=="__main__":
     perf_pred = pd.concat([tabla2['employeeid'], pd_pred], axis=1)
     # Filtrar solo los empleados que van a renunciar (renuncia == 1)
     condicion2 = perf_pred[perf_pred["renuncia"] == 1]
-    # Traer de 'tabla2' los valores de las variables originales para los empleados que van a renunciar
+    # Traer de 'tabla2' los valores de las variables originales para los empleados que van a renunciar.
     variables_desertores = tabla2.loc[condicion2.index, df_t.columns.tolist() + ['employeeid']]    # Concatenar los valores de las variables originales y la condición de renuncia en un nuevo DataFrame 'tabla_final'
     #LLevar a BD para despliegue 
     variables_desertores.to_sql("prediccion_renuncias",con,if_exists="replace") ## llevar predicciones a BD con ID Empleados
@@ -73,22 +73,27 @@ m_dtc.tree_.value[1]
 tabla_graficos=pd.concat([pd_pred, tabla2], axis=1)
 tablagraf=tabla_graficos.loc[:, df_t.columns.tolist() + ['employeeid',"renuncia"]]
 
+###
 sns.boxplot(y=tablagraf.age, x=tablagraf.renuncia)
 plt.ylabel("Edad")
 plt.xlabel("Renuncia")
 plt.title("Boxplot edad y renuncia")
+###
 sns.boxplot(y=tablagraf.monthlyincome, x=tablagraf.renuncia)
 plt.ylabel("Ingresos mensuales")
 plt.xlabel("Renuncia")
 plt.title("Boxplot ingresos mensuales y renuncia")
+###
 sns.boxplot(y=tablagraf.jobsatisfaction, x=tablagraf.renuncia)
 plt.ylabel("Satisfacción laboral")
 plt.xlabel("Renuncia")
 plt.title("Boxplot satisfacción laboral y renuncia")
+###
 sns.boxplot(y=tablagraf.yearssincelastpromotion, x=tablagraf.renuncia)
 plt.ylabel("Años desde el ultimo ascenso")
 plt.xlabel("Renuncia")
 plt.title("Boxplot años desde el ultimo ascenso y renuncia")
+###
 sns.boxplot(y=tablagraf.yearswithcurrmanager, x=tablagraf.renuncia)
 plt.ylabel("Años con el mismo jefe")
 plt.xlabel("Renuncia")

@@ -8,7 +8,7 @@ import joblib
 from sklearn.preprocessing import StandardScaler ## escalar variables 
 from itertools import product
 import scipy.stats as ss
-####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto
+####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto.
 
 #Esta función permite hacer una prueba chi-cuadrado a las variables categóricas 
 def prueba_chicuadrado(tabla):
