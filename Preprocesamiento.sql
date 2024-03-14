@@ -22,7 +22,7 @@ SELECT retirementDate, EmployeeID, Attrition FROM info_retiros
 WHERE strftime('%Y',retirementDate) = '2016' AND 
 retirementType = "Resignation" 
 ;
---Se crea la tabla para generar la condicion en where exists
+--Se crea la tabla para generar la condición en where exists
 DROP TABLE IF EXISTS info_retiros2_1 ;
 CREATE TABLE info_retiros2_1 AS
 SELECT retirementDate, EmployeeID, Attrition FROM info_retiros
