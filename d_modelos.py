@@ -78,6 +78,9 @@ np.mean(accu, axis=0)
 sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrain, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
+#en esta validacin cruzada que incluye todas la variables y las variables con threshold de 2.2*mean
+#se observa que los modelos DCT y RFC sostienen la misma metrica F1 score, desde aqui se sospecha
+#que pueden ser los modelos elegidos
 
 # "función" para buscar el mejor threshold que seleccina las variables para cada modelo.------------------
 df_resultado = pd.DataFrame()
@@ -101,19 +104,26 @@ plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 plt.ylabel("F1 score")
 plt.title("Variacion threshold")
-#Mejor threshold para cada modelo.----------------
-df.idxmax(axis=0)
+#Como se observa los modelos DCT Y RFC no se ven afectados por la cantidad de variables selecionados por los estimadores,
+#sin embargo los otros dos modelos al incrementar la exigencia en el threshold dejan caer su rendimiento
 
-#Los dos modelos a tunear son random_forest y decision_tree con un trheshold de 2.2 por la media, en el documento se explica 
+#Mejor threshold para cada modelo
+df.idxmax(axis=0)
+#Sin embargo los threshold con los mejores rendimientos en los modelos DTC Y RFC 
+#estan exigiendo tanto a la seleccion de variables que solo aparece una o dos variables.
+
+#Los dos modelos a tunear son random_forest y decision_tree con un trheshold de 2.2 por la media,
 modelos= [ mcla, mdtc, mrfc, mgbc]
 var_names=funciones.sel_variables(modelos, x, dfy, threshold="2.5*mean")
 var_names.shape
+#Finalmente se escogen 5 variables para entrenar el modelo, se determino este numero
+#ya que segun la grafica presentan un desempeño casi igual al threshold con mayor rendimiento
 
 #tabla final
 xtrainf=x[var_names] 
-#Al final se deja este threshold que da como resultado 6 variables
+#Al final se deja este threshold que da como resultado 5 variables
 
-#Volvemos a medir el modelo
+#Volvemos a medir el modelo pero con las 5 variables y todas las variables
 accu_x=funciones.medir_modelos(modelos,"f1",x,dfy,20) ## base con todas las variables 
 accu_xtrainf=funciones.medir_modelos(modelos,"f1",xtrainf,dfy,20) ### base con variables seleccionadas
 
@@ -141,6 +151,9 @@ plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
 plt.ylabel("F1 score")
 plt.title("Comparación de seleccion de variables")
+# Finalmente al unir los tres grupos de datos, todas las variables, las 8 variables y las 5 variables 
+# se obtienen resultados practicamente iguales, por lo que para buscar una explicabilidad mayor se decidio
+# la base con las 5 variables elegidas por los estimadores
 
 #Tuning para DTC--------------------------------------------------------
 parameters0 = {'class_weight': ['balanced'],
@@ -157,7 +170,7 @@ pd.set_option('display.max_colwidth', 100)
 resultados0=grid_result0.cv_results_
 grid_result0.best_params_
 pd_resultados0=pd.DataFrame(resultados0)
-pd_resultados0[["params","mean_test_score"]].sort_values(by="mean_test_score", ascending=False)
+#Se mejora la metrica de 0,84 a 0,93, por lo que el tunnig funciono adecuadamente
 
 #Se guarda el modelo
 dtc_final=grid_result0.best_estimator_ ### Guardar el modelo con hyperparameter tunning
@@ -188,7 +201,7 @@ resultados1=grid_result1.cv_results_
 grid_result1.best_params_
 pd_resultados1=pd.DataFrame(resultados1)
 pd_resultados1[["params","mean_test_score"]].sort_values(by="mean_test_score", ascending=False)
-
+# El modelo mejoro de 0,85 a 0,93 en la metrica de evaluacion
 #Se guarda el modelo
 rfc_final=grid_result1.best_estimator_ ### Guardar el modelo con hyperparameter tunning
 
@@ -204,6 +217,7 @@ train_test_rfc=pd.concat([train_rfc, test_rfc],axis=1)
 train_test_rfc.columns=['train_score','test_score']
 ax=train_test_rfc.plot()
 ax.set_ylim([0, 1])
+#El modelo generaliza de forma correcta los datos
 #PARA DTC
 # convertir resultado de evaluacion entrenamiento y evaluacion en data frame para DTC
 train_dtc=pd.DataFrame(eval2['train_score'])
@@ -214,14 +228,17 @@ ax=train_test_dtc.plot()
 ax.set_ylim([0, 1])
 ax.set_ylabel("F1 score")
 ax.set_title("Evaluacion de generalización del modelo")
+#El modelo generaliza de forma correcta los datos
 
+#Calculo de las medias
 train_test_rfc["test_score"].mean()
 train_test_dtc["test_score"].mean()
 
-#Se escoge el modelo de arbol de decisión ----------------------------------------------------------
-#Análisis modelos para random forest
+#Se escoge el modelo de arbol de decisión en el informe se explica por que----------------------------------------------------------
+# #Análisis modelos para  DTC
 print ("Train - Accuracy :", metrics.accuracy_score(dfy, dtc_final.predict(xtrainf)))
 print ("Train - classification report:\n", metrics.classification_report(dfy, dtc_final.predict(xtrainf)))
+#El informe se explican las metricas
 
 # Matriz de confusión
 cm= confusion_matrix(dfy, dtc_final.predict(xtrainf))
@@ -231,46 +248,12 @@ cm_display.plot()
 plt.title("Matriz de confusion")
 plt.show()
 
-#----------------------------------
-# Despliegue: Mirar importancia de variables para tomar acciones ###
-importances = dtc_final.feature_importances_
-feature_importances_df = pd.DataFrame({'Feature': xtrainf.columns, 'Importance': importances})
-feature_importances_df = feature_importances_df.sort_values(by='Importance', ascending=False)
-plt.figure(figsize=(10, 6))
-plt.barh(feature_importances_df['Feature'], feature_importances_df['Importance'], color='skyblue')
-plt.xlabel('Importance')
-plt.ylabel('Feature')
-plt.title('Feature Importances')
-plt.gca().invert_yaxis()  # Invertir el eje y para mostrar la importancia más alta arriba
-plt.show()
-
-
-#Se guarda en un Excel
-feature_importances_df.to_excel("salidas\\Peso_variables.xlsx", index=False)
 #Grafica del arbol
 plt.figure(figsize=(200,100))
 tree.plot_tree(dtc_final,fontsize=9,impurity=False,filled=True, feature_names=xtrainf.columns)
 plt.show()
 
-
-
-
-#----------------------------------------------
-# Supongamos que ya tienes un modelo entrenado 'clf' y tus datos de prueba 'X_test'
-predictions = dtc_final.predict(xtrainf)
-
-# Para obtener el camino de decisión para una instancia específica (por ejemplo, la primera)
-instance_path = dtc_final.decision_path(xtrainf.iloc[[0]])
-
-# Imprimir el camino de decisión
-print(f"Camino de decisión para la instancia 0: {instance_path}")
-
-feature_names = xtrainf.columns.tolist()
-# También puedes visualizar el árbol para entender mejor las decisiones
-from sklearn.tree import plot_tree
-plt.figure(figsize=(20, 10))
-plot_tree(dtc_final, feature_names=feature_names, filled=True)
-plt.show()
+#Guardado de objetos para el despliegue
 #------------------------------------------------------
 joblib.dump(dtc_final, "salidas\\dtc_final.pkl") ## 
 joblib.dump(rfc_final, "salidas\\rfc_final.pkl") ## 

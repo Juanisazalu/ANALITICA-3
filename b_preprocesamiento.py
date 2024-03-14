@@ -64,7 +64,7 @@ general_data.drop(["EmployeeCount","Over18","StandardHours"],axis=1, inplace=Tru
 con=sql.connect("data\\db_basedatos")
 cur=con.cursor()
 
-#Cargar bases
+#Cargar bases al DB
 encuesta_empleado.to_sql('encuesta_empleado', con, if_exists ="replace")
 general_data.to_sql('general_data', con, if_exists ="replace")
 encuesta_gerente.to_sql('encuesta_gerente', con, if_exists ="replace")
@@ -120,9 +120,9 @@ len(tabla[tabla["v_objetivo"]==1])
 #Eliminación de la columna employeeid
 tabla.drop("employeeid", axis=1, inplace=True)
 
+#Se gurda en excel para la exploración y luego para la seleccion de variables
 tabla.to_csv('tabla_exploración.csv', index=False) #Carga base para exploración
 tabla.info()
-len(tabla.columns)
 
 #-----------------------------------------------------------------------------------------------
 #Preprocesamiento para el test 
@@ -142,6 +142,6 @@ tabla2.isnull().sum()
 #Convertir a minúscula 
 tabla2.columns=tabla2.columns.str.lower()
 
-#Guardado de tabla
+#Guardado de tabla para el despliegue
 tabla2.to_csv('tabla2.csv', index=False)
 
