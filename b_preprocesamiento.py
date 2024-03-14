@@ -1,4 +1,4 @@
-#Importación de librerias
+#Importación de librerías
 import pandas as pd
 import sqlite3 as sql #### para bases de datos sql
 import a_funciones as funciones
@@ -42,16 +42,16 @@ encuesta_gerente["SurveyDate"]=pd.to_datetime(encuesta_gerente["SurveyDate"])
 info_retiros["retirementDate"]
 info_retiros["retirementDate"]=pd.to_datetime(info_retiros["retirementDate"])
 
-#Valores unicos para las variables exploración inicial 
+#Valores únicos para las variables exploración inicial 
 for tabla in [general_data,encuesta_empleado,encuesta_gerente,info_retiros]:
     print("------------------------------------") #cambio de tabla
     for col in tabla.columns:
         funciones.cat_summary(tabla, col) 
 #La exploración anterior arroja que las variables  EmployeeCount, Over18, StandardHours
-#son constantes y por lo tanto no aportaran nada al modelo, ademas algunas otras variables
+#son constantes y por lo tanto no aportaran nada al modelo, además algunas otras variables
 #que no tienen un sentido claro.
     
-#Eliminacion de columnas segun la exploración
+#Eliminación de columnas según la exploración
 encuesta_empleado.drop("Unnamed: 0", axis=1, inplace=True)
 general_data.drop("Unnamed: 0", axis=1, inplace=True)
 encuesta_gerente.drop("Unnamed: 0", axis=1, inplace=True)
@@ -89,14 +89,14 @@ tabla["JobSatisfaction"]=tabla["JobSatisfaction"].apply(lambda x: x if not pd.is
 tabla["WorkLifeBalance"]=tabla["WorkLifeBalance"].apply(lambda x: x if not pd.isnull(x) else int(tabla["WorkLifeBalance"].median()))
 
 tabla.isnull().sum()
-#Convertir a minusculas el nombre de las columnas
+#Convertir a minúsculas el nombre de las columnas
 tabla.columns=tabla.columns.str.lower()
 
-#Analisis relacion entre variables numericas como matriz de correlación
+#Análisis relación entre variables numéricas como matriz de correlación
 figure(figsize=(20,6))
 sns.heatmap(tabla.corr(),cmap = sns.cubehelix_palette(as_cmap=True), annot = True, fmt = ".2f")
 
-#Segun la matriz de correlación las variables que tienen mayor correlación con otras variables son:
+#Según la matriz de correlación las variables que tienen mayor correlación con otras variables son:
 #yearsatcompany
 #totalworkingyears
 #performancerating
@@ -108,7 +108,7 @@ tabla.drop("performancerating", axis=1, inplace=True)
 figure(figsize=(20,6))
 sns.heatmap(tabla.corr(),cmap = sns.cubehelix_palette(as_cmap=True), annot = True, fmt = ".2f")
 
-#Analisis relacion entre variables categoricas
+#Análisis relación entre variables categóricas
 funciones.prueba_chicuadrado(tabla)
 #Se elimina 
 #Genero
@@ -120,7 +120,7 @@ len(tabla[tabla["v_objetivo"]==1])
 #Eliminación de la columna employeeid
 tabla.drop("employeeid", axis=1, inplace=True)
 
-#Se gurda en excel para la exploración y luego para la seleccion de variables
+#Se guarda en Excel para la exploración y luego para la selección de variables
 tabla.to_csv('tabla_exploración.csv', index=False) #Carga base para exploración
 tabla.info()
 

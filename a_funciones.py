@@ -1,4 +1,4 @@
-####### prueba
+####### Prueba
 import numpy as np
 import pandas as pd
 from sklearn.impute import SimpleImputer ### para imputación
@@ -10,7 +10,7 @@ from itertools import product
 import scipy.stats as ss
 ####Este archivo contienen funciones utiles a utilizar en diferentes momentos del proyecto
 
-#Esta función permite hacer una prueba chi-cuadrado a las variables categoricas 
+#Esta función permite hacer una prueba chi-cuadrado a las variables categóricas 
 def prueba_chicuadrado(tabla):
     tabla_cat = tabla.select_dtypes(include=['object']).copy()
     cat_var1=tuple(tabla.select_dtypes(include=["object"]))
@@ -23,7 +23,7 @@ def prueba_chicuadrado(tabla):
     resultado=[x for x in result if x[2]>0.05]
     return resultado
     
-#Esta función permite ver los valores unicos por variable
+#Esta función permite ver los valores únicos por variable
 def cat_summary(dataframe, col_name):
     print(pd.DataFrame({col_name: dataframe[col_name].value_counts(),
                         'Ratio': 100 * dataframe[col_name].value_counts() / len(dataframe)}))
@@ -116,4 +116,4 @@ def preparar_datos (df):
     
     return X
 
-####### funcion para variar el treshold y sacar el mejor desempeño###
+####### Función para variar el treshold y sacar el mejor desempeño###
