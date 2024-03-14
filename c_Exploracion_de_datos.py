@@ -41,16 +41,21 @@ tabla.describe()
 tabla.info()
 
 
-#Exploracion variables numericas
+#Exploracion variables categoricas en un diagrama de tortas
 plt.figure(figsize=(25, 10))
+#Se puede observar en el siguiente grafico mayor que cerca del 70 % de los empleados viajan poco, el 20% frecuentemente y el 10% no viaja
 plt.subplot(2,3,1)
 tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
+#Se observa que la mayoria de los empleados pertenecen a investigación y desarrollo, el 30 % a ventas y un 4% a recursos humanos
 plt.subplot(2,3,2)
 tabla['department'].value_counts().plot(kind='pie',autopct='%.2f')
+# Los puestos de trabajo en su mayoria están invertigador cientifico, tecnico de laboratorio y ejecutivos de ventas
 plt.subplot(2,3,3)
 tabla['jobrole'].value_counts().plot(kind='pie',autopct='%.2f')
+# Su educación con un 40% está en el campo de las ciencias, un 30% en un campo medico, y esto puede explicar su gran porcentaje que se tiene en investigación y desarrollo
 plt.subplot(2,3,4)
 tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
+# Los empleados en su mayoria están casados con un 46%, solteros un 31% y divorciados con un 22%
 plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
