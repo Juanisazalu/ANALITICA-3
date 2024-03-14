@@ -99,7 +99,8 @@ plt.figure(figsize=(10,10))
 sns.lineplot(data=df)
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
-
+plt.ylabel("F1 score")
+plt.title("Variacion threshold")
 #Mejor threshold para cada modelo.----------------
 df.idxmax(axis=0)
 
@@ -133,10 +134,13 @@ sns.boxplot(data=accu, palette="Set3")
 comp_final=pd.concat([accu, accu_xtrain],axis=1)
 comp_final.columns=['rl', 'dt', 'rf', 'gb',
        'rl_Sel_f', 'dt_sel_f', 'rf_sel_f', 'gb_Sel_f','rl_Sel', 'dt_sel', 'rf_sel', 'gb_Sel']
+comp_final.mean()
 #Gráfico para comparar
 sns.boxplot(data=comp_final, palette="Set3")
 plt.xticks(rotation=45, ha="right")
 plt.tight_layout()
+plt.ylabel("F1 score")
+plt.title("Comparación de seleccion de variables")
 
 #Tuning para DTC--------------------------------------------------------
 parameters0 = {'class_weight': ['balanced'],
@@ -208,7 +212,8 @@ train_test_dtc=pd.concat([train_dtc, test_dtc],axis=1)
 train_test_dtc.columns=['train_score','test_score']
 ax=train_test_dtc.plot()
 ax.set_ylim([0, 1])
-
+ax.set_ylabel("F1 score")
+ax.set_title("Evaluacion de generalización del modelo")
 
 train_test_rfc["test_score"].mean()
 train_test_dtc["test_score"].mean()
@@ -223,6 +228,7 @@ cm= confusion_matrix(dfy, dtc_final.predict(xtrainf))
 # Visualización de la matriz de confusión
 cm_display = ConfusionMatrixDisplay(confusion_matrix = cm, display_labels=['No renuncia', 'renuncia'])
 cm_display.plot()
+plt.title("Matriz de confusion")
 plt.show()
 
 #----------------------------------

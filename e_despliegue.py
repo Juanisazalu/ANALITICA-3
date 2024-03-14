@@ -5,6 +5,8 @@ import sqlite3 as sql
 import joblib
 import openpyxl ## para exportar a excel
 import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
 
 con=sql.connect("data\\db_basedatos")
 cur=con.cursor()
@@ -42,4 +44,28 @@ if __name__=="__main__":
     variables_desertores.to_excel("salidas\\prediccion.xlsx")   #### exportar predicciones mas bajas y variables explicativas
     feature_importances_df.to_excel("salidas\\importancia_variables.xlsx") ### exportar coeficientes para analizar predicciones
 
+    #------
+    pd_pred
+    tabla_graficos=pd.concat([pd_pred, tabla2], axis=1)
+    tablagraf=tabla_graficos.loc[:, df_t.columns.tolist() + ['employeeid',"renuncia"]]
     
+    sns.boxplot(y=tablagraf.age, x=tablagraf.renuncia)
+    plt.ylabel("Edad")
+    plt.xlabel("Renuncia")
+    plt.title("Boxplot edad y renuncia")
+    sns.boxplot(y=tablagraf.monthlyincome, x=tablagraf.renuncia)
+    plt.ylabel("Ingresos mensuales")
+    plt.xlabel("Renuncia")
+    plt.title("Boxplot ingresos mensuales y renuncia")
+    sns.boxplot(y=tablagraf.jobsatisfaction, x=tablagraf.renuncia)
+    plt.ylabel("Satisfacción laboral")
+    plt.xlabel("Renuncia")
+    plt.title("Boxplot satisfacción laboral y renuncia")
+    sns.boxplot(y=tablagraf.yearssincelastpromotion, x=tablagraf.renuncia)
+    plt.ylabel("Años desde el ultimo ascenso")
+    plt.xlabel("Renuncia")
+    plt.title("Boxplot años desde el ultimo ascenso y renuncia")
+    sns.boxplot(y=tablagraf.yearswithcurrmanager, x=tablagraf.renuncia)
+    plt.ylabel("Años con el mismo jefe")
+    plt.xlabel("Renuncia")
+    plt.title("Boxplot años con el mismo jefe y renuncia")
