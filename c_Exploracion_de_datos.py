@@ -16,20 +16,24 @@ from plotly.subplots import make_subplots
 import plotly.express as px
 import plotly.graph_objects as go
 import plotly.figure_factory as ff
+
+
 tabla=pd.read_csv("tabla_exploración.csv")
 tabla.columns
 
 cat= tabla.select_dtypes(include='object').columns
 continuas= tabla.select_dtypes(exclude='object').columns
+
 ### explorar variable respuesta ###
-# crear dataset
+# se crea el dataset y se muestra en un grafico de barras su comportamiento
 fig=tabla.v_objetivo.hist(bins=20,ec='black') ## no hay atípicos
 fig.grid(False)
 plt.show()
 
 ### Dimensiones del dataset
 tabla.shape
-# Número de datos ausentes por variable
+
+# Número de datos ausentes por variable (no se encuentran datos nulos)
 tabla.isna().sum().sort_values()
 
 tabla.describe()
@@ -51,7 +55,9 @@ plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
 
-#explorar variables numéricas 
+###Se exploran las variables numéricas y se observan sus respectivas distribuciones
+# Cómo era de esperar muchas de las variables numericas estudiadas presetan un sesgo hacia la izquierda, tales como la distancia a casa, la edad, el salario, el número de compañias, entre otras
+# Las encuestas de satisfación si no mostraban una distribución clara aparente en las graficas, por lo que no se deduce nada al respecto en estas variables, como la satifacción en el trabajo, el ambiente laboral, entre otras
 fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(9, 5))
 axes = axes.flat
 columnas_numeric = tabla.select_dtypes(include=['float64', 'int']).columns
@@ -80,68 +86,66 @@ fig.suptitle('Distribución variables numéricas', fontsize = 10, fontweight = "
 
 
 ### relación de variables continuas con variable objetivo
-sns.boxplot(data=tabla, x="v_objetivo", y="age")
-sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome")
-sns.boxplot(data=tabla, x="v_objetivo", y="education")
-sns.boxplot(data=tabla, x="v_objetivo", y="joblevel")
-sns.boxplot(data=tabla, x="v_objetivo", y="monthlyincome")
-sns.boxplot(data=tabla, x="v_objetivo", y="numcompaniesworked")
-sns.boxplot(data=tabla, x="v_objetivo", y="percentsalaryhike")
-sns.boxplot(data=tabla, x="v_objetivo", y="stockoptionlevel")
-sns.boxplot(data=tabla, x="v_objetivo", y="trainingtimeslastyear")
-sns.boxplot(data=tabla, x="v_objetivo", y="yearssincelastpromotion")
-sns.boxplot(data=tabla, x="v_objetivo", y="yearswithcurrmanager")
-sns.boxplot(data=tabla, x="v_objetivo", y="environmentsatisfaction")
-sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction")
-sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance")
-sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")
+sns.boxplot(data=tabla, x="v_objetivo", y="age")#Los desertores aparetemente registran una menor edad frente a los que no
+sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="education")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="joblevel")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="monthlyincome")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="numcompaniesworked")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="percentsalaryhike")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="stockoptionlevel")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="trainingtimeslastyear")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="yearssincelastpromotion")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="yearswithcurrmanager")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="environmentsatisfaction") # Se encuentran que el satifación del ambiente si es mucho mejor en los no desertores
+sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction") #La satifación labor si era mucho mayor en los que no desertaron
+sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance")#No hay una diferencia significativa
+sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")#No hay una diferencia significativa
 
 ###Relacion de variables categorica con variable respuesta
-tabla[cat].columns
 
+# El siguiente grafico se puede observar como hay una menor proporción de desertores en las personas que no viajan 
 cross_tab = pd.crosstab(tabla['businesstravel'], tabla['v_objetivo'])
-# Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
-plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
-plt.xlabel('Estado civil')
+plt.title('Gráfico de Barras Apiladas: Deserción por viajante')
+plt.xlabel('Viaja o no viaja')
 plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
-
+# En el grafico no se observa una distinción aparente entre el tipo de departamento en el que se encuentran las 
 cross_tab = pd.crosstab(tabla['department'], tabla['v_objetivo'])
-# Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
-plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
-plt.xlabel('Estado civil')
+plt.title('Gráfico de Barras Apiladas: Deserción por departamento al que pertenece')
+plt.xlabel('Departamento')
 plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
+# Para los médicos y los cientificos se puede encontrar mayor proporción de desertores con respecto a los otros campos de estudios
 cross_tab = pd.crosstab(tabla['educationfield'], tabla['v_objetivo'])
-# Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
-plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
-plt.xlabel('Estado civil')
+plt.title('Gráfico de Barras Apiladas: Deserción por la educación que tiene el empleado')
+plt.xlabel('Campo en el que estudió')
 plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
+# Los tecnicos de laboratorio, ejucutivos en venta y los investigadores cientificos muestran una mayor proporción de deserciones con respecto a los otros cargos
 cross_tab = pd.crosstab(tabla['jobrole'], tabla['v_objetivo'])
-# Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
-plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
-plt.xlabel('Estado civil')
+plt.title('Gráfico de Barras Apiladas: Deserción por cargo que tiene en el trabajo')
+plt.xlabel('Cargo que desempeña')
 plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
+# Aunque la diferencia proporcional no es mucha, los solteros si suelen ser más desertores según la graficas, seguidos por los casados y posteriormete los divorciados
 cross_tab = pd.crosstab(tabla['maritalstatus'], tabla['v_objetivo'])
-# Crear el gráfico de barras apiladas
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
 plt.title('Gráfico de Barras Apiladas: Deserción por Estado civil')
