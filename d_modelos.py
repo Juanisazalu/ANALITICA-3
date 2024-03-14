@@ -74,11 +74,11 @@ accu.columns=['rl', 'dt', 'rf', 'gb',
 #Promedio para cada modelo
 np.mean(accu, axis=0)
 
-#Grafico de F1 score para modelos con todas las variables y modelos con variables seleccionadas
+#Gráfico de F1 score para modelos con todas las variables y modelos con variables seleccionadas
 sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrain, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
-#en esta validacin cruzada que incluye todas la variables y las variables con threshold de 2.2*mean
+#en esta validación cruzada que incluye todas la variables y las variables con threshold de 2.2*mean
 #se observa que los modelos DCT y RFC sostienen la misma metrica F1 score, desde aqui se sospecha
 #que pueden ser los modelos elegidos
 
@@ -96,7 +96,7 @@ for i in range(30):
     thres+=0.15
     thres=round(thres,2)
 
-#Gráfica de los resultados 
+#Gráfica de los resultados __________________________________
 df=df_resultado.T
 plt.figure(figsize=(10,10))
 sns.lineplot(data=df)
@@ -116,8 +116,8 @@ df.idxmax(axis=0)
 modelos= [ mcla, mdtc, mrfc, mgbc]
 var_names=funciones.sel_variables(modelos, x, dfy, threshold="2.5*mean")
 var_names.shape
-#Finalmente se escogen 5 variables para entrenar el modelo, se determino este numero
-#ya que segun la grafica presentan un desempeño casi igual al threshold con mayor rendimiento
+#Finalmente se escogen 5 variables para entrenar el modelo, se determino este número
+#ya que según la gráfica presentan un desempeño casi igual al threshold con mayor rendimiento
 
 #tabla final
 xtrainf=x[var_names] 
@@ -135,7 +135,7 @@ accu.columns=['rl', 'dt', 'rf', 'gb',
 #Promedio para cada modelo
 np.mean(accu, axis=0)
 
-#Grafico de F1 score para modelos con todas las variables y modelos con variables seleccionadas
+#Gráfico de F1 score para modelos con todas las variables y modelos con variables seleccionadas
 sns.boxplot(data=accu_x, palette="Set3")
 sns.boxplot(data=accu_xtrainf, palette="Set3")
 sns.boxplot(data=accu, palette="Set3")
@@ -165,6 +165,7 @@ parameters0 = {'class_weight': ['balanced'],
 dtctuning=DecisionTreeClassifier()
 grid_search0=GridSearchCV(dtctuning, parameters0, scoring="f1",cv=10, n_jobs=-1)
 grid_result0=grid_search0.fit(xtrainf, dfy)
+
 #Resultados
 pd.set_option('display.max_colwidth', 100)
 resultados0=grid_result0.cv_results_
@@ -201,7 +202,8 @@ resultados1=grid_result1.cv_results_
 grid_result1.best_params_
 pd_resultados1=pd.DataFrame(resultados1)
 pd_resultados1[["params","mean_test_score"]].sort_values(by="mean_test_score", ascending=False)
-# El modelo mejoro de 0,85 a 0,93 en la metrica de evaluacion
+# El modelo mejoro de 0,85 a 0,93 en la métrica de evaluación
+
 #Se guarda el modelo
 rfc_final=grid_result1.best_estimator_ ### Guardar el modelo con hyperparameter tunning
 
@@ -210,7 +212,7 @@ eval=cross_validate(rfc_final,xtrainf,dfy,cv=20,scoring="f1",return_train_score=
 eval2=cross_validate(dtc_final,xtrainf,dfy,cv=20,scoring="f1",return_train_score=True)
 
 #Para RFC
-#convertir resultado de evaluacion entrenamiento y evaluacion en data frame para RFC
+#convertir resultado de evaluación entrenamiento y evaluación en data frame para RFC
 train_rfc=pd.DataFrame(eval['train_score'])
 test_rfc=pd.DataFrame(eval['test_score'])
 train_test_rfc=pd.concat([train_rfc, test_rfc],axis=1)
@@ -218,8 +220,9 @@ train_test_rfc.columns=['train_score','test_score']
 ax=train_test_rfc.plot()
 ax.set_ylim([0, 1])
 #El modelo generaliza de forma correcta los datos
+
 #PARA DTC
-# convertir resultado de evaluacion entrenamiento y evaluacion en data frame para DTC
+# convertir resultado de evaluación entrenamiento y evaluación en data frame para DTC
 train_dtc=pd.DataFrame(eval2['train_score'])
 test_dtc=pd.DataFrame(eval2['test_score'])
 train_test_dtc=pd.concat([train_dtc, test_dtc],axis=1)
@@ -230,11 +233,11 @@ ax.set_ylabel("F1 score")
 ax.set_title("Evaluacion de generalización del modelo")
 #El modelo generaliza de forma correcta los datos
 
-#Calculo de las medias
+#Cálculo de las medias
 train_test_rfc["test_score"].mean()
 train_test_dtc["test_score"].mean()
 
-#Se escoge el modelo de arbol de decisión en el informe se explica por que----------------------------------------------------------
+#Se escoge el modelo de árbol de decisión en el informe se explica por que----------------------------------------------------------
 # #Análisis modelos para  DTC
 print ("Train - Accuracy :", metrics.accuracy_score(dfy, dtc_final.predict(xtrainf)))
 print ("Train - classification report:\n", metrics.classification_report(dfy, dtc_final.predict(xtrainf)))
@@ -248,7 +251,7 @@ cm_display.plot()
 plt.title("Matriz de confusion")
 plt.show()
 
-#Grafica del arbol
+#Gráfica del árbol
 plt.figure(figsize=(200,100))
 tree.plot_tree(dtc_final,fontsize=9,impurity=False,filled=True, feature_names=xtrainf.columns)
 plt.show()

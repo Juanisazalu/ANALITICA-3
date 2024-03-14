@@ -41,28 +41,34 @@ tabla.describe()
 tabla.info()
 
 
-#Exploracion variables categoricas en un diagrama de tortas
+#Exploración variables categóricas en un diagrama de tortas
 plt.figure(figsize=(25, 10))
-#Se puede observar en el siguiente grafico mayor que cerca del 70 % de los empleados viajan poco, el 20% frecuentemente y el 10% no viaja
+#Se puede observar en el siguiente gráfico mayor que cerca del 70 % de los empleados viajan poco,
+# el 20% frecuentemente y el 10% no viaja
 plt.subplot(2,3,1)
 tabla['businesstravel'].value_counts().plot(kind='pie',autopct='%.2f')
-#Se observa que la mayoria de los empleados pertenecen a investigación y desarrollo, el 30 % a ventas y un 4% a recursos humanos
+#Se observa que la mayoría de los empleados pertenecen a investigación y desarrollo, el 30 % a ventas 
+# y un 4% a recursos humanos
 plt.subplot(2,3,2)
 tabla['department'].value_counts().plot(kind='pie',autopct='%.2f')
 # Los puestos de trabajo en su mayoria están invertigador cientifico, tecnico de laboratorio y ejecutivos de ventas
 plt.subplot(2,3,3)
 tabla['jobrole'].value_counts().plot(kind='pie',autopct='%.2f')
-# Su educación con un 40% está en el campo de las ciencias, un 30% en un campo medico, y esto puede explicar su gran porcentaje que se tiene en investigación y desarrollo
+# Su educación con un 40% está en el campo de las ciencias, un 30% en un campo medico, 
+# y esto puede explicar su gran porcentaje que se tiene en investigación y desarrollo.
 plt.subplot(2,3,4)
 tabla['educationfield'].value_counts().plot(kind='pie',autopct='%.2f')
-# Los empleados en su mayoria están casados con un 46%, solteros un 31% y divorciados con un 22%
+# Los empleados en su mayoría están casados con un 46%, solteros un 31% y divorciados con un 22%
 plt.subplot(2,3,5)
 tabla['maritalstatus'].value_counts().plot(kind='pie',autopct='%.2f')
 
 
 ###Se exploran las variables numéricas y se observan sus respectivas distribuciones
-# Cómo era de esperar muchas de las variables numericas estudiadas presetan un sesgo hacia la izquierda, tales como la distancia a casa, la edad, el salario, el número de compañias, entre otras
-# Las encuestas de satisfación si no mostraban una distribución clara aparente en las graficas, por lo que no se deduce nada al respecto en estas variables, como la satifacción en el trabajo, el ambiente laboral, entre otras
+# Cómo era de esperar muchas de las variables numéricas estudiadas presetan un sesgo hacia la izquierda, 
+# tales como la distancia a casa, la edad, el salario, el número de compañias, entre otras
+# Las encuestas de satisfación si no mostraban una distribución clara aparente en las gráficas, 
+# por lo que no se deduce nada al respecto en estas variables, como la satifacción en el trabajo, 
+# el ambiente laboral, entre otras.
 fig, axes = plt.subplots(nrows=4, ncols=4, figsize=(9, 5))
 axes = axes.flat
 columnas_numeric = tabla.select_dtypes(include=['float64', 'int']).columns
@@ -90,7 +96,7 @@ fig.suptitle('Distribución variables numéricas', fontsize = 10, fontweight = "
 
 
 
-### relación de variables continuas con variable objetivo
+### Relación de variables continuas con variable objetivo
 sns.boxplot(data=tabla, x="v_objetivo", y="age")#Los desertores aparetemente registran una menor edad frente a los que no
 sns.boxplot(data=tabla, x="v_objetivo", y="distancefromhome")#No hay una diferencia significativa
 sns.boxplot(data=tabla, x="v_objetivo", y="education")#No hay una diferencia significativa
@@ -107,9 +113,9 @@ sns.boxplot(data=tabla, x="v_objetivo", y="jobsatisfaction") #La satifación lab
 sns.boxplot(data=tabla, x="v_objetivo", y="worklifebalance")#No hay una diferencia significativa
 sns.boxplot(data=tabla, x="v_objetivo", y="jobinvolvement")#No hay una diferencia significativa
 
-###Relacion de variables categorica con variable respuesta
+###Relación de variables categórica con variable respuesta
 
-# El siguiente grafico se puede observar como hay una menor proporción de desertores en las personas que no viajan 
+# El siguiente gráfico se puede observar como hay una menor proporción de desertores en las personas que no viajan 
 cross_tab = pd.crosstab(tabla['businesstravel'], tabla['v_objetivo'])
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
@@ -119,7 +125,8 @@ plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
-# En el grafico no se observa una distinción aparente entre el tipo de departamento en el que se encuentran las 
+# En el gráfico no se observa una distinción aparente entre el tipo de departamento
+# en el que se encuentran las personas 
 cross_tab = pd.crosstab(tabla['department'], tabla['v_objetivo'])
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
@@ -129,7 +136,8 @@ plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
-# Para los médicos y los cientificos se puede encontrar mayor proporción de desertores con respecto a los otros campos de estudios
+# Para los médicos y los científicos se puede encontrar mayor proporción de desertores 
+# con respecto a los otros campos de estudios
 cross_tab = pd.crosstab(tabla['educationfield'], tabla['v_objetivo'])
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
@@ -139,7 +147,8 @@ plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
-# Los tecnicos de laboratorio, ejucutivos en venta y los investigadores cientificos muestran una mayor proporción de deserciones con respecto a los otros cargos
+# Los técnicos de laboratorio, ejucutivos en venta y los investigadores científicos 
+# muestran una mayor proporción de deserciones con respecto a los otros cargos
 cross_tab = pd.crosstab(tabla['jobrole'], tabla['v_objetivo'])
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
@@ -149,7 +158,8 @@ plt.ylabel('Número de Personas')
 plt.legend(title='Deserción')
 plt.show()
 
-# Aunque la diferencia proporcional no es mucha, los solteros si suelen ser más desertores según la graficas, seguidos por los casados y posteriormete los divorciados
+# Aunque la diferencia proporcional no es mucha, los solteros si suelen ser más desertores según la graficas, 
+# seguidos por los casados y posteriormete los divorciados
 cross_tab = pd.crosstab(tabla['maritalstatus'], tabla['v_objetivo'])
 plt.figure(figsize=(8, 6))
 cross_tab.plot(kind='bar', stacked=True, colormap='coolwarm')
