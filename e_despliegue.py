@@ -43,7 +43,28 @@ if __name__=="__main__":
     #Guardar en excel
     variables_desertores.to_excel("salidas\\prediccion.xlsx")   #### exportar predicciones mas bajas y variables explicativas
     feature_importances_df.to_excel("salidas\\importancia_variables.xlsx") ### exportar coeficientes para analizar predicciones
-
+    #Ruta de la decisión
+    m_dtc.tree_.node_count
+    dense_matrix = pd.DataFrame(m_dtc.decision_path(df_t).todense())
+    ruta= pd.concat([perf_pred, dense_matrix,], axis=1)
+    ruta=ruta[ruta["renuncia"]==1]
+    ruta.to_sql("Ruta_decision",con,if_exists="replace") ## llevar predicciones a BD con ID Empleados
+    #Al tener un arbol de este tamaño se hace complejo observar la ruta de decision
+    #Guardado en excel
+    ruta=ruta.head()
+    ruta.to_excel("salidas\\Ruta_decisión.xlsx") ### exportar coeficientes para analizar predicciones
+    
+    #Tabla estandarizada para interpretacion
+    estandar=pd.concat([perf_pred, df_t], axis=1)
+    estandar=estandar.head()
+    #Guardado en excel
+    estandar.to_excel("salidas\\valores_estandarizados.xlsx")
+#consultas para interpretar la ruta de decision del empleado dos en el documento
+#En este caso observamos el nodo 1
+m_dtc.tree_.feature[1]  
+m_dtc.tree_.threshold[1]
+m_dtc.tree_.n_node_samples[1]
+m_dtc.tree_.value[1]
 #Graficos relacionados a la clasificacion, se buscaria automatizar para que aparezcan automaticamente segun el numero de variables seleccionadas
 tabla_graficos=pd.concat([pd_pred, tabla2], axis=1)
 tablagraf=tabla_graficos.loc[:, df_t.columns.tolist() + ['employeeid',"renuncia"]]
